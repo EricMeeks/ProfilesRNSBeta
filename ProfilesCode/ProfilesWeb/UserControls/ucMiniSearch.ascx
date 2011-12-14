@@ -1,15 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ucMiniSearch.ascx.cs"
     Inherits="UserControls_ucMiniSearch" %>
-     <%--
-    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
-    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
-    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
-    National Center for Research Resources and Harvard University.
-
-
-    Code licensed under a BSD License. 
-    For details, see: LICENSE.txt 
- --%> 
 <asp:Panel ID="pnlMiniSearch" runat="server" Visible="true" DefaultButton="BtnMiniSearch">
     <!--***** Table Mini Search *****-->
     <div style="font-weight: bold; padding-top: 4px;">
@@ -30,14 +20,6 @@
         </div>
         <div>
             <asp:DropDownList ID="ddlInst" runat="server" Width="98%" />
-        </div>
-    </div>
-    <div id="divDepartment" runat="server">
-        <div style="font-weight: bold; padding-top: 4px;">
-            Department
-        </div>
-        <div>
-            <asp:DropDownList ID="ddlDepartment" runat="server" Width="98%" />
         </div>
     </div>
     <div style="margin-top: 12px; text-align: center;">

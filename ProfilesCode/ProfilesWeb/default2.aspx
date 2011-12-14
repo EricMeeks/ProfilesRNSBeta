@@ -1,530 +1,659 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
- <%--
-    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
-    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
-    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
-    National Center for Research Resources and Harvard University.
-
-
-    Code licensed under a BSD License. 
-    For details, see: LICENSE.txt 
- --%> 
+<?xml version="1.0" encoding="utf-8" ?>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Network Browser</title>
-<style>
-form {margin:0px;padding:0px;}
-</style>
-
-<link rel="stylesheet" type="text/css" href="CSS/style.css" />
-
-<script type="text/javascript" src="http://localhost:15643/ProfilesWeb/scriptaculous/prototype.js"></script>
-<script type="text/javascript" src="http://localhost:15643/ProfilesWeb/scriptaculous/scriptaculous.js"></script>
-<script type="text/javascript" src="http://localhost:15643/ProfilesWeb/networkBrowserClass.js"></script>
-
-
-<script language="JavaScript" type="text/javascript">
-<!--
-//v1.7
-// Flash Player Version Detection
-// Detect Client Browser type
-// Copyright 2005-2008 Adobe Systems Incorporated.  All rights reserved.
-var isIE  = (navigator.appVersion.indexOf("MSIE") != -1) ? true : false;
-var isWin = (navigator.appVersion.toLowerCase().indexOf("win") != -1) ? true : false;
-var isOpera = (navigator.userAgent.indexOf("Opera") != -1) ? true : false;
-function ControlVersion()
-{
-	var version;
-	var axo;
-	var e;
-	// NOTE : new ActiveXObject(strFoo) throws an exception if strFoo isn't in the registry
-	try {
-		// version will be set for 7.X or greater players
-		axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7");
-		version = axo.GetVariable("$version");
-	} catch (e) {
-	}
-	if (!version)
-	{
-		try {
-			// version will be set for 6.X players only
-			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");
-
-			// installed player is some revision of 6.0
-			// GetVariable("$version") crashes for versions 6.0.22 through 6.0.29,
-			// so we have to be careful.
-
-			// default to the first public version
-			version = "WIN 6,0,21,0";
-			// throws if AllowScripAccess does not exist (introduced in 6.0r47)
-			axo.AllowScriptAccess = "always";
-			// safe to call for 6.0r47 or greater
-			version = axo.GetVariable("$version");
-		} catch (e) {
-		}
-	}
-	if (!version)
-	{
-		try {
-			// version will be set for 4.X or 5.X player
-			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
-			version = axo.GetVariable("$version");
-		} catch (e) {
-		}
-	}
-	if (!version)
-	{
-		try {
-			// version will be set for 3.X player
-			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash.3");
-			version = "WIN 3,0,18,0";
-		} catch (e) {
-		}
-	}
-	if (!version)
-	{
-		try {
-			// version will be set for 2.X player
-			axo = new ActiveXObject("ShockwaveFlash.ShockwaveFlash");
-			version = "WIN 2,0,0,11";
-		} catch (e) {
-			version = -1;
-		}
-	}
-
-	return version;
-}
-// JavaScript helper required to detect Flash Player PlugIn version information
-function GetSwfVer(){
-	// NS/Opera version >= 3 check for Flash plugin in plugin array
-	var flashVer = -1;
-
-	if (navigator.plugins != null && navigator.plugins.length > 0) {
-		if (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]) {
-			var swVer2 = navigator.plugins["Shockwave Flash 2.0"] ? " 2.0" : "";
-			var flashDescription = navigator.plugins["Shockwave Flash" + swVer2].description;
-			var descArray = flashDescription.split(" ");
-			var tempArrayMajor = descArray[2].split(".");
-			var versionMajor = tempArrayMajor[0];
-			var versionMinor = tempArrayMajor[1];
-			var versionRevision = descArray[3];
-			if (versionRevision == "") {
-				versionRevision = descArray[4];
-			}
-			if (versionRevision[0] == "d") {
-				versionRevision = versionRevision.substring(1);
-			} else if (versionRevision[0] == "r") {
-				versionRevision = versionRevision.substring(1);
-				if (versionRevision.indexOf("d") > 0) {
-					versionRevision = versionRevision.substring(0, versionRevision.indexOf("d"));
-				}
-			}
-			var flashVer = versionMajor + "." + versionMinor + "." + versionRevision;
-		}
-	}
-	// MSN/WebTV 2.6 supports Flash 4
-	else if (navigator.userAgent.toLowerCase().indexOf("webtv/2.6") != -1) flashVer = 4;
-	// WebTV 2.5 supports Flash 3
-	else if (navigator.userAgent.toLowerCase().indexOf("webtv/2.5") != -1) flashVer = 3;
-	// older WebTV supports Flash 2
-	else if (navigator.userAgent.toLowerCase().indexOf("webtv") != -1) flashVer = 2;
-	else if ( isIE && isWin && !isOpera ) {
-		flashVer = ControlVersion();
-	}
-	return flashVer;
-}
-// When called with reqMajorVer, reqMinorVer, reqRevision returns true if that version or greater is available
-function DetectFlashVer(reqMajorVer, reqMinorVer, reqRevision)
-{
-	versionStr = GetSwfVer();
-	if (versionStr == -1 ) {
-		return false;
-	} else if (versionStr != 0) {
-		if(isIE && isWin && !isOpera) {
-			// Given "WIN 2,0,0,11"
-			tempArray         = versionStr.split(" "); 	// ["WIN", "2,0,0,11"]
-			tempString        = tempArray[1];			// "2,0,0,11"
-			versionArray      = tempString.split(",");	// ['2', '0', '0', '11']
-		} else {
-			versionArray      = versionStr.split(".");
-		}
-		var versionMajor      = versionArray[0];
-		var versionMinor      = versionArray[1];
-		var versionRevision   = versionArray[2];
-        	// is the major.revision >= requested major.revision AND the minor version >= requested minor
-		if (versionMajor > parseFloat(reqMajorVer)) {
-			return true;
-		} else if (versionMajor == parseFloat(reqMajorVer)) {
-			if (versionMinor > parseFloat(reqMinorVer))
-				return true;
-			else if (versionMinor == parseFloat(reqMinorVer)) {
-				if (versionRevision >= parseFloat(reqRevision))
-					return true;
-			}
-		}
-		return false;
-	}
-}
-function AC_AddExtension(src, ext)
-{
-  if (src.indexOf('?') != -1)
-    return src.replace(/\?/, ext+'?');
-  else
-    return src + ext;
-}
-function AC_Generateobj(objAttrs, params, embedAttrs)
-{
-  var str = '';
-  if (isIE && isWin && !isOpera)
-  {
-    str += '<object ';
-    for (var i in objAttrs)
-    {
-      str += i + '="' + objAttrs[i] + '" ';
-    }
-    str += '>';
-    for (var i in params)
-    {
-      str += '<param name="' + i + '" value="' + params[i] + '" /> ';
-    }
-    str += '</object>';
-  }
-  else
-  {
-    str += '<embed ';
-    for (var i in embedAttrs)
-    {
-      str += i + '="' + embedAttrs[i] + '" ';
-    }
-    str += '> </embed>';
-  }
-  document.write(str);
-}
-function AC_FL_RunContent(){
-  var ret =
-    AC_GetArgs
-    (  arguments, ".swf", "movie", "clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
-     , "application/x-shockwave-flash"
-    );
-  AC_Generateobj(ret.objAttrs, ret.params, ret.embedAttrs);
-}
-function AC_SW_RunContent(){
-  var ret =
-    AC_GetArgs
-    (  arguments, ".dcr", "src", "clsid:166B1BCA-3F9C-11CF-8075-444553540000"
-     , null
-    );
-  AC_Generateobj(ret.objAttrs, ret.params, ret.embedAttrs);
-}
-function AC_GetArgs(args, ext, srcParamName, classid, mimeType){
-  var ret = new Object();
-  ret.embedAttrs = new Object();
-  ret.params = new Object();
-  ret.objAttrs = new Object();
-  for (var i=0; i < args.length; i=i+2){
-    var currArg = args[i].toLowerCase();
-    switch (currArg){
-      case "classid":
-        break;
-      case "pluginspage":
-        ret.embedAttrs[args[i]] = args[i+1];
-        break;
-      case "src":
-      case "movie":
-        args[i+1] = AC_AddExtension(args[i+1], ext);
-        ret.embedAttrs["src"] = args[i+1];
-        ret.params[srcParamName] = args[i+1];
-        break;
-      case "onafterupdate":
-      case "onbeforeupdate":
-      case "onblur":
-      case "oncellchange":
-      case "onclick":
-      case "ondblclick":
-      case "ondrag":
-      case "ondragend":
-      case "ondragenter":
-      case "ondragleave":
-      case "ondragover":
-      case "ondrop":
-      case "onfinish":
-      case "onfocus":
-      case "onhelp":
-      case "onmousedown":
-      case "onmouseup":
-      case "onmouseover":
-      case "onmousemove":
-      case "onmouseout":
-      case "onkeypress":
-      case "onkeydown":
-      case "onkeyup":
-      case "onload":
-      case "onlosecapture":
-      case "onpropertychange":
-      case "onreadystatechange":
-      case "onrowsdelete":
-      case "onrowenter":
-      case "onrowexit":
-      case "onrowsinserted":
-      case "onstart":
-      case "onscroll":
-      case "onbeforeeditfocus":
-      case "onactivate":
-      case "onbeforedeactivate":
-      case "ondeactivate":
-      case "type":
-      case "codebase":
-      case "id":
-        ret.objAttrs[args[i]] = args[i+1];
-        break;
-      case "width":
-      case "height":
-      case "align":
-      case "vspace":
-      case "hspace":
-      case "class":
-      case "title":
-      case "accesskey":
-      case "name":
-      case "tabindex":
-        ret.embedAttrs[args[i]] = ret.objAttrs[args[i]] = args[i+1];
-        break;
-      default:
-        ret.embedAttrs[args[i]] = ret.params[args[i]] = args[i+1];
-    }
-  }
-  ret.objAttrs["classid"] = classid;
-  if (mimeType) ret.embedAttrs["type"] = mimeType;
-  return ret;
-}
-// -->
-</script>
-
-<script>
-	function XPathQuery(xmlDoc, xPath) {
-		var retArray = [];
-		if (!xmlDoc) {
-			console.warn("An invalid XMLDoc was passed to i2b2.h.XPath");
-			return retArray;
-		}
-		try {
-			if (window.ActiveXObject) {
-				// Microsoft's XPath implementation
-				// HACK: setProperty attempts execution when placed in IF statements' test condition, forced to use try-catch
-				try {
-					xmlDoc.setProperty("SelectionLanguage", "XPath");
-				} catch(e) {
-					try {
-						xmlDoc.ownerDocument.setProperty("SelectionLanguage", "XPath");
-					} catch(e) {}
-				}
-				retArray = xmlDoc.selectNodes(xPath);
-			}
-			else if (document.implementation && document.implementation.createDocument) {
-				// W3C XPath implementation (Internet standard)
-				var ownerDoc = xmlDoc.ownerDocument;
-				if (!ownerDoc) {ownerDoc = xmlDoc; }
-				var nodes = ownerDoc.evaluate(xPath, xmlDoc, null, XPathResult.ANY_TYPE, null);
-				var rec = nodes.iterateNext();
-				while (rec) {
-					retArray.push(rec);
-					rec = nodes.iterateNext();
-				}
-			}
-		} catch (e) {
-			return undefined;
-		}
-		return retArray;
-	}
-	function parseXml(xmlString){
-		var xmlDocRet = false;
-		try //Internet Explorer
-		{
-			xmlDocRet = new ActiveXObject("Microsoft.XMLDOM");
-			xmlDocRet.async = "false";
-			xmlDocRet.loadXML(xmlString);
-			xmlDocRet.setProperty("SelectionLanguage", "XPath");
-		}
-		catch (e) {
-			try //Firefox, Mozilla, Opera, etc.
-			{
-				parser = new DOMParser();
-				xmlDocRet = parser.parseFromString(xmlString, "text/xml");
-			}
-			catch (e) {
-				console.error(e.message)
-			}
-		}
-		return xmlDocRet;
-	}
-
-
-
-	function getValRange() {
-		var t = $('dataType');
-		var objType = t.options[t.selectedIndex].value;
-		var attribName = $('attribName').value
-		network_browser.getDataRange(objType, attribName);
-	}
-
-	function loadPerson(centerID) {
-		// save this for later
-		network_browser.center_id = centerID;
-		network_browser.loadNetwork(centerID);
-	}
-
-
-
-</script>
-<style>
-  div.slider div.handle { top:-7px !important; }
-</style>
+<head id="ctl00_ctl00_Head1">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title></title>
+    <!--[if IE 6]>
+    <link rel="stylesheet" type="text/css" href="CSS/IEmasterLayout.css" />
+    <![endif]-->
+    <!--[if !IE]><!-->
+    <link rel="stylesheet" type="text/css" href="CSS/masterLayout.css" />
+    <!--<![endif]-->
+    <!--[if gte IE 7]><!-->
+    <link rel="stylesheet" type="text/css" href="CSS/masterLayout.css" />
+    <!--<![endif]-->
+    <base href="http://localhost:9276/profilesweb/" />
+    <link rel="stylesheet" type="text/css" href="CSS/People.css" />
+    <link rel="stylesheet" type="text/css" href="CSS/resnav.css" />
+    <link rel="stylesheet" type="text/css" href="CSS/header_footer.css" />
+    <link rel="stylesheet" type="text/css" href="CSS/profiles.css" />
+    <link rel="stylesheet" type="text/css" href="JQuery/ui.dropdownchecklist.css" />
+    <link rel="stylesheet" type="text/css" href="CSS/comboTreeCheck.css" />
 </head>
+<body id="ctl00_ctl00_bodyMaster">
+    <div id="page-container">
+        <div style="cursor: pointer" onclick="javascript:document.location.href='search.aspx';">
+            <img id="ctl00_ctl00_heading_ucHeader_imgHeader" src="Images/banner_generic.jpg"
+                style="border-width: 0px;" />
+        </div>
+        <meta http-equiv="Expires" content="0">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Cache-Control" content="Private">
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+        <title>Distributed Interoperable Research Experts Collaboration Tool (DIRECT)</title>
+        <link rel="stylesheet" type="text/css" href="Direct.css" />
 
-<body style="background: #FFF;">
+        <script language="javascript" type="text/javascript">
 
+function NoEnter(){
+    if (window.event && window.event.keyCode == 13)
+      document.getElementById('btnsearch').click();
+    return true;
+ }
+    
+//****** List Table JavaScript
 
-
-
-
-<%
-dim uid as string
-uid = lcase(request("uid"))
-
-%>
-
-	<div id="body">
-		<script type="text/javascript">
-		window.onload = function() {
-		network_browser.Init('http://localhost:54672/NetworkBrowserService.svc/profiles/');            
-            network_browser.loadNetwork('<%=uid%>');
+	var hasClickedListTable = false;
+	function doListTableRowOver(x) {
+		x.className = 'overRow';
+		x.style.backgroundColor = '#5A719C';
+		x.style.color = '#FFF';
+		for (var i=0; i<x.childNodes.length; i++) {
+			if (x.childNodes[i].childNodes.length > 0) {
+				if (x.childNodes[i].childNodes[0].className == 'listTableLink') {
+					x.childNodes[i].childNodes[0].style.color = '#FFF';
+				}
+			}
 		}
-		</script>
-	</div>
+	}
+	function doListTableRowOut(x,eo) {
+		if (eo==1) {
+			x.className = 'oddRow';
+			x.style.backgroundColor = '#FFFFFF';
+		} else {
+			x.className = 'evenRow';
+			x.style.backgroundColor = '#F0F4F6';
+		}
+		x.style.color = '';
+		for (var i=0; i<x.childNodes.length; i++) {
+			if (x.childNodes[i].childNodes.length > 0) {
+				if (x.childNodes[i].childNodes[0].className == 'listTableLink') {
+					x.childNodes[i].childNodes[0].style.color = '#36C';
+				}
+			}
+		}
+	}
+	function doListTableCellOver(x) {
+		x.className = 'listTableLinkOver';
+		x.style.backgroundColor = '#36C';
+	}
+	function doListTableCellOut(x) {
+		x.className = 'listTableLink';
+		x.style.backgroundColor = '';
+	}
+	function doListTableCellClick(x) {
+		hasClickedListTable = true;
+	}
 
+	//****** Federated Search (DIRECT) JavaScript
 
-	<div id="content">
+	var fsObject = [];
+	var dsLoading = 0;
 
+	function siteResult(SiteID,ResultError,ResultCount,ResultDetailsURL,ResultPopType,ResultPrevURL,FSID) {
+	    
+		var el1 = document.getElementById('SITE_STATUS_'+SiteID);
+		
+		var el2 = el1.childNodes[0];
+		if ((ResultError == 0)&&(ResultCount!='')) {
+			el2.innerHTML = ResultCount;
+			var el3 = document.createElement("div");
+			el3.innerHTML = '<div id="SITE_PREVIEW_'+SiteID+'" style="display:none;" ><div style="border:none;"><IFRAME src="'+ResultPrevURL+'" style="width:600px;height:300px;border:0px;" frameborder="0" /></div></div>';
+			document.getElementById('sitePreview').appendChild(el3);
+		} else {
+			ResultPopType = 'No results were returned by this institution.';
+			el2.innerHTML = '0';
+		}
 
-<div style="width:600px;text-align:center;">
+		for (var i=0; i<fsObject.length; i++) {
+			if (fsObject[i].SiteID == SiteID) {
+				fsObject[i].ResultPopType = ResultPopType;
+				fsObject[i].ResultDetailsURL = ResultDetailsURL;
+				fsObject[i].FSID = FSID;
+			}
+		}
+	}
+	function doLocalPersonSearch(directserviceURL, SiteID) {
+		for (var i=0; i<fsObject.length; i++) {
+			if (fsObject[i].SiteID == SiteID) {
+				if ((fsObject[i].ResultCount != '')&&(fsObject[i].ResultDetailsURL != '')&&(fsObject[i].FSID != '')) {
+					window.open(directserviceURL + '?request=outgoingdetails&fsid=' + fsObject[i].FSID);
+				}
+			}
+		}
+	}
+	function doSiteHoverOver(SiteID) {
+	
+		document.getElementById('FSSiteDescription').innerHTML = '';
+		
+		for (var i=0; i<fsObject.length; i++) {
+			if (fsObject[i].SiteID == SiteID) {
+				document.getElementById('FSSiteDescription').innerHTML = fsObject[i].ResultPopType;
+				document.getElementById('FSSiteDescription').style.display = "block";
+			}
+		}
+		for (var i=0; i<fsObject.length; i++) {
+			var el = document.getElementById('SITE_PREVIEW_'+fsObject[i].SiteID);
+			if (el) {el.style.display = 'none';}
+		}
+		
+		var el = document.getElementById('SITE_PREVIEW_'+SiteID);
+		if (el) {el.style.display = '';}
+	}
+	function doSiteHoverOut(SiteID) {
+		document.getElementById('FSSiteDescription').innerHTML = 'Important information about an institution\'s data will appear here when you place your mouse over the institution\'s name.';
+	}
+	
+	function doDirectSearch() {		 
+		
+		for (var i=0; i<fsObject.length; i++) {
+			fsObject[i].ResultPopType = 'Please wait while this institution processes the request.';
+			fsObject[i].ResultDetailsURL = '';
+			document.getElementById('SITE_STATUS_'+fsObject[i].SiteID).childNodes[0].innerHTML = '<img src="images/yui-loading.gif" border="0" style="position:relative;top:-2px;" />';
+		}	
+	
+	    try{
+		document.getElementById('FSResultsBox').style.display='block';
+		}catch(err){}
+		try{
+		document.getElementById('FSPassiveResultsBox').style.display='block';
+		}catch(err){}
+		try{
+		document.getElementById('sitePreview').innerHTML = '';
+		}catch(err){}
+		
+		var f = document.getElementById("FSSearchPhrase");
+		
+		var s = f.value;
+		
+		var m = Math.random();
+		
+		
+		var u = 'http://localhost:9276/ProfilesWeb/DirectService.aspx?blank=N&request=outgoingcount&SearchPhrase='+s+'&r='+m;
+		
+		document.getElementById('FSAJAXFrame').src = u;
+	
+	}
+	function doAuto() {	
+		var f = document.getElementById('FSSearchPhrase');f.value = 'ear';doDirectSearch();
+	}
 
-<style type="text/css">
-  div.slider { width:180px; margin-right:14px; background-color:#FFF; height:10px; position: relative; }
-  div.slider div.handle { width:10px; height:15px; border:#900 1px solid; background-color:#FCC; cursor:move; position: absolute; }
-  div.slider div.span { margin-top:7px;border:1px solid #666;background-color:#666; }
-  div#zoom_element { width:50px; height:50px; background:#2d86bd; position:relative; }
-</style>
+        </script>
 
-<table>
-	<tr>
-		<td style="text-align:left;">Publications</td>
-		<td style="text-align:left;">Co-Publications</td>
-		<td style="text-align:left;">Most Recent Co-publications</td>
-	</tr>
-	<tr>
-		<td>
-			<div id="copubs" class="slider">
-			  <div id="copubs_handle" class="handle"></div>
-			  <div id="copubs_track" class="span"></div>
-			</div>
-		</td>
-		<td>
-			<div id="pub_cnt" class="slider">
-			  <div id="pub_cnt_handle" class="handle"></div>
-			  <div id="pub_cnt_track" class="span"></div>
-			</div>
-		</td>
-		<td>
-			<div id="pub_date" class="slider">
-			  <div id="pub_date_handle" class="handle"></div>
-			  <div id="pub_cnt_track" class="span"></div>
-			</div>
-		</td>
-	</tr>
-	<tr style="line-height:6px; text-align:right; color:#555; font-size:10px; padding-top:0px; margin-top:0px">
-		<td style="padding-right:16px" id="lbl_pubs">any number</td>
-		<td style="padding-right:16px" id="lbl_copubs">any collaboration</td>
-		<td style="padding-right:16px" id="lbl_recent">any year</td>
-	</tr>
-</table>
+        <div id="ctl00_ctl00_divContainer" class="colmask holygrail">
+            <div class="col13top">
+                <div id="ctl00_ctl00_divCol13topSpace" class="col13topSpace">
+                </div>
+            </div>
+            <!-- Start Container -->
+            <div class="colmid">
+                <div class="colleft">
+                    <form name="aspnetForm" method="post" action="direct.aspx?SearchPhrase=ear" id="aspnetForm">
+                    <div>
+                        <input type="hidden" name="ctl00_ctl00_container_scmPeople_HiddenField" id="ctl00_ctl00_container_scmPeople_HiddenField"
+                            value="" />
+                        <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+                        <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+                        <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="lekJF3yBByyArVPiuuMgRrB/3lf7vv1/0SHVJA7mjVhmiIKOXJAt2VytjPLJ8CB7lBpRhF2qHqISlNQiuy2ubRpN5dkmv9ezbd+Rf6qx1ajeS9aTOHappycj1BYJxaNl+uB6pArRKT0+kG3vROyUCKs6vdk8crOosT9pEL52FqaQZd5aOI0nG56bdTlAX508RGxcsaB21L5IbOtjB7UIQP3P0MiAaaTDYDJhS3GaAHVUBGIL/nq4QLGiCciwGFXovyPQPOEN+6m00MJFGAOzyxl5kF1DTsPK8dijzCmd6KNsEC7SbVVjwz9jqNJVvIuXm9Hea/3Ka83wLbIgbQ3pk/Zvd66haT1FCKcB+TNu/nhS/T6eUIxzKFosKdnlQLBRo+LzFgNdkTqdtXfexdaTses9sfrQ/8obpIMDRYkFpiagZJGCetUidlKNDFtSoovtg6MjAkAhxcCYSFS2kuyurNpAdq05H/FNblNhnshizOeLTAhvlE6FRX/vHBfYEK7Ke/JWoFqcn81zVcQtwJUUVTJ6Lif66WoeBYlEuCDsjCBMOv3vEZO8b7SwUCPOuaI3VzHTncnDYlGvsa5BZCAWjNWGkC4AhLaqNisGrqKACMglp0Y/Q++2QMyCHk+bvUL5yTqoLpZyrHgPyw9UHTE7lssoU5DXBD9VH+YN2Ns2NvKRSGRPj81zeGzJy7JLX81OFt1ftUvLQBGf/ZNIsqayG6ijbbyEUMWzVe+tBpTn20KjM5caWXphHXShvOuGabVy2DwW8gBJQhcVmqi5gb0U8pf9iHu3FnGbZzB7m9GuAiEb4Hv5JGYxkmL5+d6eKOgCmRSYVBIGIxXYLqxXxUnQI//C80fIT3o2sI+pbs7tA9YaZJPs9cqLQmysHpqxqEBBvvZwY+Y9DYQdQVFAkZtX3B2dIQucXiTEgNuWMrqpG/5IoTQQ4L/EfQS4kxs0HvRh+s2l9kr9uzkps9Fluek6m7gx0AUleJrBHd/X+uwXbWmfajbcAuAf0fCtdba7/6B4LLSESQKnPdNWZWiGOZGsyW5ZZxei5B3ZtaBMPMJOhzqdcXkjQ71qIBeV0FaGW7mKa/2KqyEbq1VLIYE5qdHH6KLbJICgT+XkbnDlK+P+ryp/2w7XJM6LAi+UXG09W5oem/TDiR9WLkKpaVG/dXiGckhpLQnnbJTXgq58hTjI/yNcnV72TMnjPLfu1iVuQVMkJMMWB8CC2aaElhylayNwaV/GHWvsnFMKI3iCgT6X4NV485iCQrRer86fSFugC500gy/7J6K0tejrgwvEcI9iNqv+Ietv2x1w0ubwbyrNmgvXt4iawA+BV2qj5j3f6R8XbnZ07pkMtBgPT92E2ah154brJv8sCYQlZP2GWXGecmMWjPHFJX/gcFOdTBH8SCkYDx2ckfcnw0vGK6hQX/8x5uecvrgsJzFIxBcFjWMoX7ZOrP1S9BS4/QJ5MCr6eUE2fp99VKbbgbbBGQ9wGTkVX7EnPHtPgj84MaPPi1b+eBEyUFh8K9sepsvm0YuuwVGL17NOF7JrE3Rfs3z07YGM8K4ljli7GZ8/npDyXHcUlJjlPiBVFvYnjqCOP33PquJqwhdcKTLUvFhNQAxTPlM3VM2bUbQAgnjhSrbM8YwFCIlg49QInXEvDvhohQv6OQhrvn4eNio6Sfp8axP0pp4lChFgu7z/3vW8i20kNlTh76U1k8rPH58rmo/0bCRYSh6ayyjGxqaD3gXzSUZ175dOVy9jTubY/Votit1dYSEyPcLGB8oWEwRisdH1XC/0e6gjX2D6bCnF4dS8PIuABLh+BoscDEFE8e1SLXtzxsdPNbW/6jYER2QKUI7Wa2KGsl+oCetlbcUAyxjoEYxFZ0bCopUfe3hne1sCGsrXCzDaAUUR4HTkRIsVAfKkjcxuookz4gzd4oc517ZRLW2EH4HgJlFaAsD9KWTakY5IXRK+vKP3feoqvGl6I/5XdVSjlLUmp7tFhKmAhTQplUnO1JymPYivPoBljZ+Kou3jIOhcxu7wXs9Q41VGnzBf5elY7+teyhKpNACheYHFqcGb/IdKGIlEvv1GE9/oV7AZTbK4ZCdMbVwiQGnRDZhD/QfVcgPcEHnjc8miPZxOcq02YYHRFlzJUhW1+xq/kWcQFKvojSdYxJ04EM6xeEeZ+Kj+jQV5CLZ90XdrgG0jEoy5uhgY7iJwHsWJdw6bee4UA/2v4CMbcYC5GLr+yT7qUeWFtv1K1qpP6YYzV2k1ZW2HZixw/UPSlvMEajZjnvsyj7MK7Rc/M2qtiWNT2bNH37cauShjWu0ux5TV3+FXmc9P6v9ISKutipWwdSsrl3E1hV3tQniJA7h3oQtClsjT/YNdV7i5LDg1qwzpVUhc2IONO60if/mwODFDr3n4RcAKt6CfZlOeif61mMZDIE4UmKYa/6z7o3WERtC3T5cIoAJhaCAzfq6p4/+do28Huq2QgztJh7K87n9cKpMytwI93JCaW7RZw2bJsc0k9ykmjWqA7cEwCpbq7wvREmp7P/FMQ0ZfA4IZPGuBqwjLUK6xKKmSIOCjdD9RagUeiN/lqfl8XQYZKvdkdg7R2COvqNzvcE0THGRAcoln" />
+                    </div>
 
-</div>
+                    <script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['aspnetForm'];
+if (!theForm) {
+    theForm = document.aspnetForm;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+                    </script>
 
+                    <script src="/ProfilesWeb/WebResource.axd?d=Cr6NY1haBII3CUWgTf-vRxkAVYzK1FJ6XORbJp5zHXYb1faJ2WnIXBUQYE-i4nGMszzp_Bd8NNpxf0uVdI32lDKWS0A1&amp;t=634208634757546466"
+                        type="text/javascript"></script>
 
-<div style="margin-top:15px;border:1px solid #666;border-bottom:none;width:600px;height:20px;text-align:center;background-color:#f5e4cc"><div id="person_name"><b><%=request("dn")%></b></div></div>
-<div style="border:1px solid #666;width:600px;height:600px;">
+                    <script src="/ProfilesWeb/ScriptResource.axd?d=Fp78RnKYjWCBVNLstb8FMbYQ-Jya8rE0FFUPl_YA971RHxOEbyWvd2yc_svLjBwtWOlgOGW-zRBTX2BRt_N95ibCbvMd7Nb7Lt2KFXU1xE0VR7BN-kCc_5-xDfTX8DKYM7ZX5FSswQ8EWJl52MIobmurCGTANXPKLiIaWDyqj6fJQ9QN0&amp;t=5c2f384e"
+                        type="text/javascript"></script>
 
-<script language="JavaScript" type="text/javascript">
-    AC_FL_RunContent(
-		'codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0',
-		'width', '600',
-		'height', '600',
-		'src', 'network_browserFLASH',
-		'quality', 'high',
-		'pluginspage', 'http://www.adobe.com/go/getflashplayer',
-		'align', 'middle',
-		'play', 'true',
-		'loop', 'true',
-		'scale', 'showall',
-		'wmode', 'window',
-		'devicefont', 'false',
-		'id', 'network_browserFLASH',
-		'bgcolor', '#ffffff',
-		'name', 'network_browserFLASH',
-		'menu', 'true',
-		'allowFullScreen', 'false',
-		'allowScriptAccess', 'always',
-		'movie', 'network_browser',
-		'salign', ''
-		); //end AC code
-</script>
+                    <script type="text/javascript">
+//<![CDATA[
+if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax client-side framework failed to load.');
+//]]>
 
-	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="800" height="800" id="network_browserFLASH" align="middle">
-	<param name="movie" value="network_browserFLASH.swf" /><param name="quality" value="high" /><param name="bgcolor" value="#ffffff" />
-    <embed src="network_browserFLASH.swf" quality="high" bgcolor="#ffffff" width="800" height="800" name="network_browserFLASH" align="middle" allowScriptAccess="sameDomain" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer" />
-	</object>
+                    </script>
 
+                    <script src="/ProfilesWeb/ScriptResource.axd?d=4E-N9V-KtUC4Q4CAej6LyN5oTxa_zyWVtbop-_cKcicxwHzgqGgR1ltDULTMTiPrMhOjKfQ1XeeCSTtIz5zaH_LypvpUlk4ACKl_AqhrdrxioYtZSEcahich7ToEpgOhnS2AIAz-b2qsCpo1WrfKkBkTE5qlHlJdn6iW2OFYkAav1tgd0&amp;t=5c2f384e"
+                        type="text/javascript"></script>
 
-</div>
+                    <div>
+                        <input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="" />
+                        <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="3PxHb2MDb+wQG5Pd4acehJkjL4VflHW02NvnRmBfrgfMd17z87emPvWNWRi6CH3W1wgRSbBckbHti3BKhG7DbH8G8P9oayrry4U2tD0GNLycJw9XJnlP31rvFdLjDys/KkWWT8iX7iFrpclk+j2t2slsHAKGOnPGBj2KtReKqal6xQvwExqZ1AaZnQps5dl3mU7SKKQIjAcKnV4q8tGn17EBfvTQGfiwELu0ymD4CshUozCn2pk2YqIkweG1odVWpdMq+89Jmdkgit6HNI56fk0agVXo+wKhb40ihkFkM1B6Uy1ZP2wNx3HhehVfEs6ExeaygnDc1yInha+eZ34HQpDksnu5tL/x8CugB5h/UNd31XgCWpIhfozy5dr8bOSEMd9zmc7tqxq8ial5sJaMXqvZwR0=" />
+                    </div>
 
+                    <script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ctl00$ctl00$container$scmPeople', document.getElementById('aspnetForm'));
+Sys.WebForms.PageRequestManager.getInstance()._updateControls(['tctl00$ctl00$left$upnlMinisearch','tctl00$ctl00$left$UpdatePanel1'], [], [], 90);
+//]]>
+                    </script>
 
-<div style="display:none;">
+                    <div class="col1wrap">
+                        <div id="ctl00_ctl00_divCol1" class="col1">
+                            <div class="searchForm">
+                                <div class="pageTitle">
+                                    National Search</div>
+                                <div class="pageSubTitle">
+                                    Distributed Interoperable Research Experts Collaboration Tool (DIRECT)</div>
+                                <div class="pageSubTitleCaption">
+                                    DIRECT is pilot project to demonstrate federated search across multiple institutions.</div>
+                                <div class="searchForm">
+                                    <input type="hidden" name="request" value="outgoingcount" />
+                                    <input type="hidden" name="r" value="1168904361" />
+                                    <div class="searchSection" style="width: 600px;">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    Keywords
+                                                </td>
+                                                <td class="fieldMain">
+                                                    <input type='text' name="SearchPhrase" id="FSSearchPhrase" value="ear" class="inputText" />
+                                                </td>
+                                                <td class="fieldOptions">
+                                                    <input type='button' value="Search" name="btnsearch" id="btnsearch" class="inputButton"
+                                                        onclick="JavaScript:doDirectSearch();" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div id="siteDesc" style="display: none">
+                                    <div style="padding: 0px 2px">
+                                        Details</div>
+                                    <div id="siteDescText">
+                                        testing</div>
+                                </div>
+                                <div id="FSResultsBox" style="margin-top: 20px; display: none;">
+                                    <div style="margin-bottom: 15px;">
+                                        Below are the number of matching people at participating institutions. Click an
+                                        institution name to view the list of people. As you move your mouse over the different
+                                        institution names, you will see important notes about that institution's data on
+                                        the right and a preview/summary of the matching people at the bottom of this page.
+                                    </div>
+                                    <div class='listTable' style='margin-top: 6px; margin-bottom: 18px;'>
+                                        <table>
+                                            <tr style='font-weight: bold; background-color: #F0F4F6'>
+                                                <td style='width: 450px; text-align: left;'>
+                                                    Institution</a>
+                                                </td>
+                                                <td style='width: 150px; text-align: center;'>
+                                                    Matches</a>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #FFFFFF' onmouseover="doListTableRowOver(this);doSiteHoverOver(1);"
+                                                onmouseout="doListTableRowOut(this,1);doSiteHoverOut(1);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',1);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        Cornell University</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_1'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #F0F4F6' onmouseover="doListTableRowOver(this);doSiteHoverOver(2);"
+                                                onmouseout="doListTableRowOut(this,0);doSiteHoverOut(2);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',2);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        Harvard University</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_2'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #FFFFFF' onmouseover="doListTableRowOver(this);doSiteHoverOver(3);"
+                                                onmouseout="doListTableRowOut(this,1);doSiteHoverOut(3);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',3);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        Indiana University</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_3'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #F0F4F6' onmouseover="doListTableRowOver(this);doSiteHoverOver(4);"
+                                                onmouseout="doListTableRowOut(this,0);doSiteHoverOut(4);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',4);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        Ponce School of Medicine</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_4'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #FFFFFF' onmouseover="doListTableRowOver(this);doSiteHoverOver(6);"
+                                                onmouseout="doListTableRowOut(this,1);doSiteHoverOut(6);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',6);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        The Scripps Research Institute</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_6'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #F0F4F6' onmouseover="doListTableRowOver(this);doSiteHoverOver(7);"
+                                                onmouseout="doListTableRowOut(this,0);doSiteHoverOut(7);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',7);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        University of California, San Francisco</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_7'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #FFFFFF' onmouseover="doListTableRowOver(this);doSiteHoverOver(8);"
+                                                onmouseout="doListTableRowOut(this,1);doSiteHoverOut(8);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',8);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        University of Florida</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_8'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #F0F4F6' onmouseover="doListTableRowOver(this);doSiteHoverOver(9);"
+                                                onmouseout="doListTableRowOut(this,0);doSiteHoverOut(9);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',9);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        University of Iowa</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_9'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #FFFFFF' onmouseover="doListTableRowOver(this);doSiteHoverOver(10);"
+                                                onmouseout="doListTableRowOut(this,1);doSiteHoverOut(10);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',10);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        University of Minnesota</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_10'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #F0F4F6' onmouseover="doListTableRowOver(this);doSiteHoverOver(11);"
+                                                onmouseout="doListTableRowOut(this,0);doSiteHoverOut(11);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',11);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        Washington University in St. Louis</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_11'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style='cursor: pointer; background-color: #FFFFFF' onmouseover="doListTableRowOver(this);doSiteHoverOver(12);"
+                                                onmouseout="doListTableRowOut(this,1);doSiteHoverOut(12);" onclick="doLocalPersonSearch('http://localhost:9276/ProfilesWeb/DirectService.aspx',12);">
+                                                <td style='text-align: left;'>
+                                                    <div style='width: 438px;'>
+                                                        Weill Cornell Medical College</div>
+                                                </td>
+                                                <td style='text-align: center;'>
+                                                    <div style='width: 138px;'>
+                                                        <div id='SITE_STATUS_12'>
+                                                            <div class='siteresult' style='height: 16px;'>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
 
-	<div id="nodeData" style="background:#999999; width:390px; padding:5px; margin-bottom:20px; height:180px; float:left;"></div>
-	<div id="edgeData" style="background:#999999; width:390px; padding:5px; margin-bottom:20px; height:180px; float:left;"></div>
+                                    <script>var t = {}; t.SiteID = 1; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 2; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 3; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 4; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 6; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 7; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 8; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 9; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 10; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 11; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
+var t = {}; t.SiteID = 12; t.ResultPopType = ''; t.ResultDetailsURL = ''; t.FSID = ''; fsObject.push(t);
 
-	<div style="clear:both; margin-top:20px"></div>
+                                    </script>
 
-</div>
+                                    <iframe name="FSAJAXFrame" id="FSAJAXFrame" src="http://localhost:9276/ProfilesWeb/DirectService.aspx?request=outgoingcount&blank=y&r=rnd"
+                                        frameborder="0" scrolling="no" style="width: 0px; height: 0px;" />
+                                    </iframe> <b>&nbsp;&nbsp;Preview</b>
+                                    <div id="sitePreview" style="width: 600px; height: 300px; border: 1px solid #999;">
+                                    </div>
+                                </div>
+                            </div>
 
+                            <script type="text/javascript"> doAuto();</script>
 
+                        </div>
+                    </div>
+                    <div id="ctl00_ctl00_divCol2" class="col2">
+                        <div id="ctl00_ctl00_left_divLeftTop">
+                            <div id="ctl00_ctl00_left_activeTop" class="activeTop">
+                                &nbsp;</div>
+                            <div id="ctl00_ctl00_left_activeMainWrapper" class="activeMainWrapper">
+                                <div class="activeMain">
+                                    <div class="leftColumnWidgetGroup">
+                                        <div class="leftColumnWidgetSearch">
+                                            <div id="ctl00_ctl00_left_upnlMinisearch">
+                                                <div id="ctl00_ctl00_left_ucMiniSearch_pnlMiniSearch" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'ctl00_ctl00_left_ucMiniSearch_BtnMiniSearch')">
+                                                    <!--***** Table Mini Search *****-->
+                                                    <div style="font-weight: bold; padding-top: 4px;">
+                                                        Keyword
+                                                    </div>
+                                                    <div>
+                                                        <input name="ctl00$ctl00$left$ucMiniSearch$txtKword" type="text" id="ctl00_ctl00_left_ucMiniSearch_txtKword"
+                                                            style="width: 140px;" />
+                                                    </div>
+                                                    <div style="font-weight: bold;">
+                                                        Last Name
+                                                    </div>
+                                                    <div>
+                                                        <input name="ctl00$ctl00$left$ucMiniSearch$txtLName" type="text" id="ctl00_ctl00_left_ucMiniSearch_txtLName"
+                                                            style="width: 140px;" />
+                                                    </div>
+                                                    <div id="ctl00_ctl00_left_ucMiniSearch_divInstitution">
+                                                        <div style="font-weight: bold; padding-top: 4px;">
+                                                            Institution
+                                                        </div>
+                                                        <div>
+                                                            <select name="ctl00$ctl00$left$ucMiniSearch$ddlInst" id="ctl00_ctl00_left_ucMiniSearch_ddlInst"
+                                                                style="width: 98%;">
+                                                                <option selected="selected" value="--Select--" title="--Select--">--Select--</option>
+                                                                <option value="BIDMC" title="Beth Israel Deaconess Medical Center">Beth Israel Deaconess
+                                                                    Medical Center</option>
+                                                                <option value="BWH" title="Brigham and Women's Hospital">Brigham and Women's Hospital</option>
+                                                                <option value="CHALLIANCE" title="Cambridge Health Alliance">Cambridge Health Alliance</option>
+                                                                <option value="CHILDRENS" title="Children's Hospital Boston">Children's Hospital Boston</option>
+                                                                <option value="DFCI" title="Dana-Farber Cancer Institute">Dana-Farber Cancer Institute</option>
+                                                                <option value="FAS" title="Faculty of Arts &amp; Sciences">Faculty of Arts &amp; Sciences</option>
+                                                                <option value="FORSYTH" title="Forsyth Institute">Forsyth Institute</option>
+                                                                <option value="EDU" title="Graduate School of Education">Graduate School of Education</option>
+                                                                <option value="DIV" title="Harvard Divinity School">Harvard Divinity School</option>
+                                                                <option value="HIM" title="Harvard Insitutes of Medicine">Harvard Insitutes of Medicine</option>
+                                                                <option value="LAW" title="Harvard Law School">Harvard Law School</option>
+                                                                <option value="HMS" title="Harvard Medical School">Harvard Medical School</option>
+                                                                <option value="HVMA" title="Harvard Pilgrim Healthcare">Harvard Pilgrim Healthcare</option>
+                                                                <option value="HSDM" title="Harvard School of Dental Medicine">Harvard School of Dental
+                                                                    Medicine</option>
+                                                                <option value="SPH" title="Harvard School of Public Health">Harvard School of Public
+                                                                    Health</option>
+                                                                <option value="OPR" title="Harvard University">Harvard University</option>
+                                                                <option value="HEBREW RHB" title="Hebrew Rehabilitation Center">Hebrew Rehabilitation
+                                                                    Center</option>
+                                                                <option value="IDI" title="Immune Disease Institute">Immune Disease Institute</option>
+                                                                <option value="KSG" title="John F. Kennedy School of Government">John F. Kennedy School
+                                                                    of Government</option>
+                                                                <option value="JOSLIN" title="Joslin Diabetes Center">Joslin Diabetes Center</option>
+                                                                <option value="JBCC" title="Judge Baker Children's Center">Judge Baker Children's Center</option>
+                                                                <option value="LAHEY" title="Lahey Clinic Medical Center">Lahey Clinic Medical Center</option>
+                                                                <option value="BIDMC MMHC" title="Mass Mental Health Center">Mass Mental Health Center</option>
+                                                                <option value="MEEI" title="Massachusetts Eye and Ear Infirmary">Massachusetts Eye and
+                                                                    Ear Infirmary</option>
+                                                                <option value="MGH" title="Massachusetts General Hospital">Massachusetts General Hospital</option>
+                                                                <option value="MIT" title="Massachusetts Institute of Technology">Massachusetts Institute
+                                                                    of Technology</option>
+                                                                <option value="MCLEAN" title="McLean Hospital">McLean Hospital</option>
+                                                                <option value="MTA" title="Mount Auburn Hospital">Mount Auburn Hospital</option>
+                                                                <option value="NE BAPTIST" title="New England Baptist Hospital">New England Baptist
+                                                                    Hospital</option>
+                                                                <option value="NEWTN-WSLY" title="Newton-Wellesley Hospital">Newton-Wellesley Hospital</option>
+                                                                <option value="HVMA" title="Other">Other</option>
+                                                                <option value="SERI" title="Schepens Eye Research Institute">Schepens Eye Research Institute</option>
+                                                                <option value="SEAS" title="School of Engineering and Applied Sciences">School of Engineering
+                                                                    and Applied Sciences</option>
+                                                                <option value="SPAULDING" title="Spaulding Rehabilitation Hospital">Spaulding Rehabilitation
+                                                                    Hospital</option>
+                                                                <option value="VA" title="Veterans Affairs Boston Healthcare System">Veterans Affairs
+                                                                    Boston Healthcare System</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div style="margin-top: 12px; text-align: center;">
+                                                        <input type="submit" name="ctl00$ctl00$left$ucMiniSearch$BtnMiniSearch" value="Search"
+                                                            id="ctl00_ctl00_left_ucMiniSearch_BtnMiniSearch" />&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <input type="submit" name="ctl00$ctl00$left$ucMiniSearch$btnMiniClear" value="Clear"
+                                                            id="ctl00_ctl00_left_ucMiniSearch_btnMiniClear" />
+                                                    </div>
+                                                    <div style="text-align: center; margin-top: 10px;">
+                                                        <a id="ctl00_ctl00_left_ucMiniSearch_hyplnkOptions" class="SearchListLink" href="Search.aspx">
+                                                            More Search Options</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activeBottom">
+                                &nbsp;</div>
+                        </div>
+                        <div class="activeTop">
+                            &nbsp;</div>
+                        <div class="activeMainWrapper">
+                            <div class="activeMain">
+                                <div>
+                                    <div class="leftColumnWidget">
+                                        <div id="ctl00_ctl00_left_UpdatePanel1">
+                                            <div id="ctl00_ctl00_left_pnlMenu">
+                                                <div class="menuWidgetTitle">
+                                                    Menu</div>
+                                                <div style="margin-top: 3px;">
+                                                    <a id="ctl00_ctl00_left_hypSearch" class="SearchListLink" href="Search.aspx">New Search</a>
+                                                </div>
+                                                <div style="margin-top: 3px;">
+                                                    <a id="ctl00_ctl00_left_hypAboutProfiles" class="SearchListLink" href="About.aspx">About
+                                                        Profiles</a>
+                                                </div>
+                                            </div>
+                                            <div id="ctl00_ctl00_left_pnlNotLoggedIn">
+                                                <div style="margin-top: 3px;">
+                                                    <a id="ctl00_ctl00_left_hypNotLoggedIn" class="SearchListLink" href="http://localhost:9276/ProfilesWeb/login.aspx?EditMyProfile=true">
+                                                        Edit My Profile</a>
+                                                </div>
+                                                <div style="margin-top: 3px; margin-bottom: 3px;">
+                                                    <a id="ctl00_ctl00_left_hypLogMeIn" class="SearchListLink" href="http://localhost:9276/ProfilesWeb/login.aspx">
+                                                        Login To Profiles</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="activeBottom">
+                            &nbsp;</div>
+                    </div>
+                    <div id="ctl00_ctl00_divCol3" class="col3">
+                        <div class="DirectSidebar">
+                            <div id="FSPassiveResultsBox" >
+                                <div class="passive_section_head">
+                                    <div style="margin-bottom: 5px;">
+                                        Data Comments</div>
+                                </div>
+                                <div class="passive_section_body">
+                                    <div id="FSSiteDescription">
+                                        Important information about an institution's data will appear here when you place
+                                        your mouse over the institution's name.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<!--
+                    <script type="text/javascript">
+//<![CDATA[
+Sys.Application.initialize();
+//]]>
+                    </script>
 
-
-		<form style="clear:both;">
-		<table width="100%"">
-			<tr>
-				<td>Author ID</td>
-				<td><input id="authorID" value="GMW3"></td>
-				<td><input type="button" value="Load Network" onclick="loadPerson($('authorID').value)"></td>
-			</tr>
-			<tr><td>&nbsp;</td></tr>
-			<tr>
-				<td>DataRange:</td>
-				<td><select id="dataType"><option value="NODE">Node</option><option value="EDGE">Edge</option></select></td>
-				<td>Attribute Name:<br /><input id="attribName"></td>
-				<td>Min:<div id="minVal"></div> Max:<div id="maxVal"></div></td>
-				<td><input type="button" value="Get Value Range" onclick="getValRange()"></td>
-			</tr>
-		</table>
-		</form>
-
--->
-
-
-	</div>
-
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End Container -->
+        <div id="ctl00_ctl00_divMainContainerBottom" class="main_container_bottom">
+        </div>
+    </div>
 </body>
 </html>

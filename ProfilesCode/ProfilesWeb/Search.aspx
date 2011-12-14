@@ -53,8 +53,8 @@
             if (i != '') { s += '<div class="label">Institution</div>'; s += '<div class="data">' + i + '</div>'; }
             if (d != '') { s += '<div class="label">Department</div>'; s += '<div class="data">' + d + '</div>'; }
             if (v != '') { s += '<div class="label">Division</div>'; s += '<div class="data">' + v + '</div>'; }
-            if (t != '') { s += '<div class="label">Title</div>'; s += '<div class="data">' + t + '</div>'; }
             if (f != '') { s += '<div class="label">Faculty Rank</div>'; s += '<div class="data">' + f + '</div>'; }
+            if (t != '') { s += '<div class="label">Title</div>'; s += '<div class="data">' + t + '</div>'; }
             if (q != '') { s += '<div class="label">Query Relevance</div>'; s += '<div class="data">' + q + '</div>'; s += '<div class="data" style="font-size:10px;">(Click Why for details.)</div>'; }
             // set html
             $("div[id='divPersonSummary']").html("Person Summary");
@@ -152,7 +152,7 @@
                                 <b>except</b> the one selected</span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr runat="server" id="rowDepartment">
                         <th>
                             Department
                         </th>
@@ -162,6 +162,19 @@
                         </td>
                         <td class="fieldOptions">
                             <asp:CheckBox ID="chkDepartment" runat="server" />&nbsp;<span style="color: #666666;">All
+                                <b>except</b> the one selected</span>
+                        </td>
+                    </tr>
+                    <tr runat="server" id="rowDivision">
+                        <th style="text-align: right;">
+                            Division
+                        </th>
+                        <td class="fieldMain">
+                            <asp:DropDownList ID="ddlDivision" runat="server" Width="255px" AutoPostBack="false"
+                                ToolTip="Select Division" />
+                        </td>
+                        <td class="fieldOptions">
+                            <asp:CheckBox ID="chkDivision" runat="server" />&nbsp;<span style="color: #666666;">All
                                 <b>except</b> the one selected</span>
                         </td>
                     </tr>
@@ -341,11 +354,6 @@
                             <asp:Label ID="lblInstitution" runat="server" Text='<%# GetInstitutionText(Eval("AffiliationList"))%>' />
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Faculty Rank" SortExpression="FacultyRank">
-                        <ItemTemplate>
-                            <asp:Label ID="lblFacultyRank" runat="server" Text='<%# GetFacultyRank(Eval("AffiliationList"))%>' />
-                        </ItemTemplate>
-                    </asp:TemplateField>
                     <asp:TemplateField HeaderText="Department" SortExpression="Department">
                         <ItemTemplate>
                             <asp:Label ID="lblDepartment" runat="server" Text='<%# GetDepartmentText(Eval("AffiliationList"))%>' />
@@ -354,6 +362,11 @@
                     <asp:TemplateField HeaderText="Division" SortExpression="Division">
                         <ItemTemplate>
                             <asp:Label ID="lblDivision" runat="server" Text='<%# GetDivisionText(Eval("AffiliationList"))%>' />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Faculty Rank" SortExpression="FacultyRank">
+                        <ItemTemplate>
+                            <asp:Label ID="lblFacultyRank" runat="server" Text='<%# GetFacultyRank(Eval("AffiliationList"))%>' />
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:HyperLinkField HeaderText="Why?" Text="Why?" DataNavigateUrlFields="PersonId"
@@ -394,7 +407,7 @@
         </div>
         <!-- Passive Networks Start -->
         <div class="passive_section_head">
-            Most viewed this Month</div>
+            Most viewed this Month</div>kj
         <!-- Passive Networks End -->
         <div class="passive_section_body">
             <ul>
@@ -427,7 +440,7 @@
             </asp:Repeater>
         </div>
         <div class="passive_section_body">
-            <asp:Repeater ID="lstSearchKeywordDisplay" runat="server">
+            <asp:Repeater ID="lstSearchKeywordDisplay" OnItemDataBound="lstSearchKeywordDisplay_ItemDataBound" runat="server">
                 <HeaderTemplate>
                     <div class="menuWidgetTitleRight">
                         <b>Keywords</b></div>
@@ -439,8 +452,16 @@
                     </li>
                 </ItemTemplate>
                 <FooterTemplate>
-                    </ul></FooterTemplate>
+                    </ul>
+                    
+                    <asp:Panel id="divDirect" runat="server" Visible="false">                                            
+                        </p>
+                        </hr>
+                        <a href="direct.aspx?SearchPhrase=<%=GetKeyword()%>">Search other institutions</a>
+                    </asp:Panel>
+                </FooterTemplate>
             </asp:Repeater>
+            
         </div>
     </div>
     <div id="searchResultsPersonSummaryContainer" runat="server">

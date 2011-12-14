@@ -180,7 +180,7 @@ network_browser = {
 				break;
 			default:
 				alert(eventName+" is unhandled.");
-				debugger;
+				
 		}
 	}
 };

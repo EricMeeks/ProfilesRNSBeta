@@ -308,7 +308,7 @@ public partial class UserEdit : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            ExceptionPolicy.HandleException(ex, GlobalConst.LogOnlyPolicy);
+            //ExceptionPolicy.HandleException(ex, GlobalConst.LogOnlyPolicy);
             lGeneralError.Visible = true;
             lGeneralError.Text = ex.Message;
         }

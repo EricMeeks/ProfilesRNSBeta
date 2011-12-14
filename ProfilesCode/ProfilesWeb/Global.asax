@@ -40,7 +40,7 @@
         //Each error that occurs will trigger this event.
         try
         {           
-            if (Session["GLOBAL_ERROR"] == null)
+            if (HttpContext.Current.Session["GLOBAL_ERROR"] == null)
             {
                 //get reference to the source of the exception chain
                 Exception ex = Server.GetLastError().GetBaseException();
@@ -54,7 +54,7 @@
                   "\nSTACKTRACE: " + ex.StackTrace,
                   EventLogEntryType.Error);
 
-                Session.Add("GLOBAL_ERROR", "MESSAGE: " + ex.Message +
+                HttpContext.Current.Session.Add("GLOBAL_ERROR", "MESSAGE: " + ex.Message +
                    "\nSOURCE: " + ex.Source +
                    "\nFORM: " + Request.Form.ToString() +
                    "\nQUERYSTRING: " + Request.QueryString.ToString());

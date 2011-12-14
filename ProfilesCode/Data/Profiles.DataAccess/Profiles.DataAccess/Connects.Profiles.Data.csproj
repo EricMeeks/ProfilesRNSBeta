@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="DataLayerException.cs" />
     <Compile Include="DepartmentDA.cs" />
+    <Compile Include="DivisionDA.cs" />
     <Compile Include="FacultyDA.cs" />
     <Compile Include="InstitutionDA.cs" />
     <Compile Include="NetworkBrowserDA.cs" />
@@ -87,9 +88,6 @@
       <Project>{72ABCD78-6907-4F63-8C59-392C9F3CE506}</Project>
       <Name>Connects.Profiles.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

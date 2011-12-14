@@ -1,16 +1,4 @@
-﻿/*  
- 
-    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
-    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
-    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
-    National Center for Research Resources and Harvard University.
-
-
-    Code licensed under a BSD License. 
-    For details, see: LICENSE.txt 
-  
-*/
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,8 +14,6 @@ public partial class UserControls_ucMiniSearch : BaseUserControl
     {
         if (!IsPostBack)
             PopulateDropdowns();
-        
-      
     }
 
     #region Search, ClearSearch Onclick Events
@@ -46,13 +32,6 @@ public partial class UserControls_ucMiniSearch : BaseUserControl
         // Ignore the first selection and no selection (-1)
         if (ddlInst.SelectedIndex > 0) 
             sbURL.AppendFormat("&Institute={0}", ddlInst.SelectedItem.Text);
-
-        if (ddlDepartment.SelectedIndex > 0)
-            sbURL.AppendFormat("&DeptName={0}", ddlDepartment.SelectedItem.Text);
-
-
-        
-
 
         Response.Redirect(sbURL.ToString());
     }
@@ -83,21 +62,6 @@ public partial class UserControls_ucMiniSearch : BaseUserControl
         }
         else
             divInstitution.Visible = false;
-
-        if (!Convert.ToBoolean(ConfigUtil.GetConfigItem("HideDepartmentSelectionForMiniSearch")))
-        {
-            ddlDepartment.DataSource = new DepartmentBL().GetDepartments();
-            ddlDepartment.DataTextField = "Department";
-            ddlDepartment.DataBind();
-            ddlDepartment.Items.Insert(0, new ListItem("--Select--"));
-            ddlDepartment.Items[0].Selected = true;
-        }
-        else
-        {
-            divDepartment.Visible = false;
-        }
-
-
     }
 
     #endregion

@@ -70,6 +70,12 @@ public partial class Search : BasePage
         ddlInstitution.Items.Insert(0, new ListItem("--Select--"));
         ddlInstitution.Items[0].Selected = true;
 
+        ddlDivision.DataSource = new DivisionBL().GetDivisions();
+        ddlDivision.DataTextField = "DivisionName";
+        ddlDivision.DataBind();
+        ddlDivision.Items.Insert(0, new ListItem("--Select--"));
+        ddlDivision.Items[0].Selected = true;
+
         ddlFacultyRank.DataSource = new FacultyBL().GetFacultyRanks();
         ddlFacultyRank.DataTextField = "FacultyRank";
         ddlFacultyRank.DataBind();
@@ -151,7 +157,7 @@ public partial class Search : BasePage
             rank = aff.FacultyType == null ? "" : aff.FacultyType.Replace("'", "");
         }
 
-        string hoverFunc = String.Format("doPersonOver('{0}','{1}','{2}','{3}','{4}','{5}','{6}');", name, inst, dept, div, title, rank, "");
+        string hoverFunc = String.Format("doPersonOver('{0}','{1}','{2}','{3}','{4}','{5}','{6}');", name, inst, dept, div, rank, title, "");
         string className = (e.Row.RowState == DataControlRowState.Alternate) ? gv.AlternatingRowStyle.CssClass : gv.RowStyle.CssClass;
         e.Row.Attributes.Add("onmouseover", "this.className='gridHover';" + hoverFunc);
         e.Row.Attributes.Add("onmouseout", "this.className='" + className + "';doPersonOut()");
@@ -178,18 +184,31 @@ public partial class Search : BasePage
             ((GridView)sender).BottomPagerRow.Visible = true;
     }
 
-    protected void lstSearchKeywordDisplay_ItemDataBound(object sender, EventArgs e)
+    protected void lstSearchKeywordDisplay_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
-        if ((((DataListItemEventArgs)e).Item.ItemType == ListItemType.Item) || (((DataListItemEventArgs)e).Item.ItemType == ListItemType.AlternatingItem))
+        if ((e.Item.ItemType == ListItemType.Item) || ((e).Item.ItemType == ListItemType.AlternatingItem))
         {
-            DataList dlKeywords = ((DataList)((DataListItemEventArgs)e).Item.FindControl("lstKeywordMatchMeshHeader"));
+            DataList dlKeywords = ((DataList)(e).Item.FindControl("lstKeywordMatchMeshHeader"));
 
             if (dlKeywords != null)
             {
-                dlKeywords.DataSource = ((MatchingKeyword)((DataListItemEventArgs)e).Item.DataItem).MatchingMeshHeader;
+                dlKeywords.DataSource = ((MatchingKeyword)(e).Item.DataItem).MatchingMeshHeader;
                 dlKeywords.DataBind();
             }
         }
+
+        if ((e).Item.ItemType == ListItemType.Footer)
+        {
+            try
+            {
+                Panel direct = ((Panel)(e).Item.FindControl("divDirect"));
+                if (ConfigUtil.GetConfigItem("DirectServiceURL") != null)
+                    direct.Visible = true;
+            }
+            catch (Exception ex) { }
+        }
+
+
 
     }
 
@@ -421,6 +440,20 @@ public partial class Search : BasePage
             searchReq.QueryDefinition.AffiliationList.Affiliation[0].InstitutionName.Exclude = chkInstitution.Checked;
         }
 
+        // Division Selection
+        if (ddlDivision.SelectedIndex != 0)
+        {
+            AffiliationDivisionName affilDivname = new AffiliationDivisionName();
+            affilDivname.Text = ddlDivision.SelectedItem.Text;
+            searchReq.QueryDefinition.AffiliationList.Affiliation[0].DivisionName = affilDivname;
+
+            // Set the appropriate message on the right 
+            ((List<string>)Session["ProfileSearchRequestCriteriaList"]).Add(chkInstitution.Checked == true ? "All except " + affilDivname.Text : affilDivname.Text);
+
+            searchReq.QueryDefinition.AffiliationList.Affiliation[0].DivisionName.Exclude = chkDivision.Checked;
+        }
+
+
         // Department Selection
         if (ddlDepartment.SelectedIndex != 0)
         {
@@ -535,11 +568,19 @@ public partial class Search : BasePage
 
             AffiliationInstitutionName affilInstname = new AffiliationInstitutionName();
             affilInstname.Text = inst;
-            profiles.QueryDefinition.AffiliationList.Affiliation[0].InstitutionName = affilInstname;
+            profiles.QueryDefinition.AffiliationList.Affiliation[0].InstitutionName = affilInstname;            
             ((List<string>)Session["ProfileSearchRequestCriteriaList"]).Add(inst);
         }
+        // Division Selection
+        if (Request.QueryString["Division"] != null)
+        {
+            string inst = this.HTMLEncode(Request.QueryString["Division"].ToString().Trim());
 
-
+            AffiliationDivisionName affilDivname = new AffiliationDivisionName();
+            affilDivname.Text = inst;
+            profiles.QueryDefinition.AffiliationList.Affiliation[0].DivisionName = affilDivname;
+            ((List<string>)Session["ProfileSearchRequestCriteriaList"]).Add(inst);
+        }
         // Department Selection
         if (Request.QueryString["DeptName"] != null)
         {
@@ -805,6 +846,25 @@ public partial class Search : BasePage
 
     }
 
+    public string GetKeyword()
+    {
+               
+      
+
+        string keyword = "";
+
+        if (this.txtKeyword.Text.Length > 0)
+            keyword = this.txtKeyword.Text;
+        else if (Session["ProfileSearchRequestKeywordList"] != null)
+        {
+            if (((List<string>)Session["ProfileSearchRequestKeywordList"]).Count > 0)
+                keyword = ((List<string>)Session["ProfileSearchRequestKeywordList"])[0];
+        }
+
+      
+        return keyword;
+    }
+
     private void ShowMiniSearch(bool visible)
     {
         //Find Control in Masterpage
@@ -833,6 +893,12 @@ public partial class Search : BasePage
 
         // Hide institution if specified in web.config
         rowInstitution.Visible = !Convert.ToBoolean(ConfigUtil.GetConfigItem("HideInstitutionSelectionForSearch"));
+
+        // Hide department if specified in web.config
+        rowDepartment.Visible = !Convert.ToBoolean(ConfigUtil.GetConfigItem("HideDepartmentSelectionForSearch"));
+
+        // Hide division if specified in web.config
+        rowDivision.Visible = !Convert.ToBoolean(ConfigUtil.GetConfigItem("HideDivisionSelectionForSearch"));
 
         divSpotlight.Visible = true;
         divSearchCriteria.Visible = false;
@@ -949,6 +1015,10 @@ public partial class Search : BasePage
             ((ListBox)sender).SelectedValue = Session["LastSearchPageSize"].ToString();
         else
             ((ListBox)sender).SelectedValue = "15";
+
+
+
+
     }
 
     protected void valPagNumRange_DataBinding(object sender, EventArgs e)
@@ -1198,7 +1268,7 @@ public partial class Search : BasePage
                     l_AllColumns.Add(l_GridColumn.HeaderText);
             }
 
-            l_AllColumns.Remove("Division");
+            //l_AllColumns.Remove("Division");
 
             //bind listBox
             

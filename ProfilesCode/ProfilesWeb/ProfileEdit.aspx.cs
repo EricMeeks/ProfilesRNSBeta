@@ -88,6 +88,9 @@ public partial class ProfileEdit : BasePageSecure
                 {
                     string backLink;
 
+                    //Get User Preferences
+                    GetUserPreferences(_personId);
+     
                     backLink = "ProfileDetails.aspx?Person=" + GetPersonFromQueryString();
 
                     // Check to make sure this logged in users is an appropriate proxy
@@ -104,8 +107,6 @@ public partial class ProfileEdit : BasePageSecure
 
                     //Populate User information
                     EditSection(_personId);
-                    //Get User Preferences
-                    GetUserPreferences(_personId);
 
 
                     //imgReadPhoto.ImageUrl = _userBL.GetUserPhotoURL(personId);
@@ -179,6 +180,14 @@ public partial class ProfileEdit : BasePageSecure
         {
             UserPreferences userPreference = new UserPreferences();
             userPreference = _userBL.GetUserPreferences(personId);
+
+            //If the user does not have a profile, then they need to be redirected back to the search screen.
+            if (!userPreference.ProfileExists)
+            {
+                Response.Redirect("~/Search.aspx");                
+            }
+
+
             //IF "Y" then Show 
             //IF "N" then Hide
             #region Hide/Show Photo
@@ -1566,6 +1575,7 @@ public partial class ProfileEdit : BasePageSecure
         UserPreferences userPreference = new UserPreferences();
         userPreference = _userBL.GetUserPreferences(_personId);
 
+       
         // For the custom photos, iterate through them and set checked to false
         for (int i = 0; i < dlPhotos.Items.Count; i++)
         {

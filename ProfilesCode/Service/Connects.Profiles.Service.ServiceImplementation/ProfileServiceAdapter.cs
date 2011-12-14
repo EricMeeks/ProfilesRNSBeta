@@ -39,10 +39,10 @@ namespace Connects.Profiles.Service.ServiceImplementation
                 //qd.OutputOptions.StartRecord = (Convert.ToInt32(qd.OutputOptions.StartRecord) + 1).ToString();
 
                 string req = XmlUtilities.SerializeToString(qd);
-
-           
+                                          
+                
                 req = req.Replace("Version=\"0\"", "Version=\"1\"");
-           
+                           
 
                 XmlUtilities.logit("Line 1: ProfileServiceAdapter.ProfileSearch(" + req + "," + isSecure.ToString() +")");
 
@@ -163,6 +163,7 @@ namespace Connects.Profiles.Service.ServiceImplementation
                             {
                                 affiliation.DepartmentName.Text = aff.DepartmentName;
                                 affiliation.InstitutionName.Text = aff.InstitutionName;
+                                
                             }
                         }
                         affList.Affiliation = new List<Affiliation>();

@@ -243,8 +243,12 @@ public class FullGridPager
         // Make sure we don't exceed the total row count
         if (endRow > TotalRowCount)
             endRow = TotalRowCount;
+        try
+        {
 
-        pageCounter.Text = "&nbsp;" + PageCounterText + "&nbsp;" + startRow.ToString() + "&nbsp;-&nbsp;" + endRow.ToString() + "&nbsp;" + PageCounterTotalText + "&nbsp;" + TotalRowCount.ToString() + "&nbsp";
+            pageCounter.Text = "&nbsp;" + PageCounterText + "&nbsp;" + startRow.ToString() + "&nbsp;-&nbsp;" + endRow.ToString() + "&nbsp;" + PageCounterTotalText + "&nbsp;" + TotalRowCount.ToString() + "&nbsp";
+        }
+        catch { }
     }
 
     public void PageGroups(GridViewRow PagerRow)

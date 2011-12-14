@@ -25,5 +25,7 @@ namespace Connects.Profiles.Common
         public string Photo { get; set; }
         public string Username { get; set; }
         public int PhotoPref { get; set; }
+        public bool ProfileExists { get; set; }
+
     }
 }

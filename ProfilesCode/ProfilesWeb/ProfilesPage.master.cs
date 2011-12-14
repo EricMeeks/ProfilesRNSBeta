@@ -17,7 +17,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Configuration;
-
+using Connects.Profiles.Common;
+using Connects.Profiles.Utility;
 using Connects.Profiles.BusinessLogic;
 
 public partial class ProfilesPage : System.Web.UI.MasterPage
@@ -52,17 +53,24 @@ public partial class ProfilesPage : System.Web.UI.MasterPage
             pnlLoggedIn.Visible = true;
             //pnlDisplayName.Visible = true;
 
-            if (Profile.HasProfile==true)
+
+            UserBL _userBL = new UserBL();
+
+            UserPreferences userPreference = new UserPreferences();
+            userPreference = _userBL.GetUserPreferences(Profile.UserId);
+
+            if (userPreference.ProfileExists)
             {
                 hypViewMyProfile.Visible = true;
                 hypViewMyProfile.NavigateUrl = "~/ProfileDetails.aspx?Person=" + Profile.ProfileId;
 
                 hypManageProxies.Visible = true;
-                hypManageProxies.NavigateUrl = "~/Proxy.aspx";                
+                hypManageProxies.NavigateUrl = "~/Proxy.aspx";
 
-                hypEditMyProfile.Visible = true;
-                hypEditMyProfile.NavigateUrl = "~/ProfileEdit.aspx?From=Self&Person=" + Profile.ProfileId;
-                
+
+                    hypEditMyProfile.Visible = true;
+                    hypEditMyProfile.NavigateUrl = "~/ProfileEdit.aspx?From=Self&Person=" + Profile.ProfileId;
+               
                 //lblDisplayName.Text = Profile.DisplayName;
             }
             else if (_UserBL.GetMyProxies(Profile.UserId).Length > 0)

@@ -36,13 +36,13 @@
                     <tr>                    
                         <td>
                             <table id="pagerInnerTable" class="pagerInnerTable" cellpadding="0" cellspacing="0"
-                                runat="server" width="100%">
+                                runat="server" width="75%">
                                 <tr>
                                     <td class="pageFirst">
-                                        <asp:LinkButton CommandName="Page" CommandArgument="First" ID="lnkFirstPage" runat="server">«</asp:LinkButton>
+                                        <asp:LinkButton CommandName="Page" CommandArgument="First" ID="lnkFirstPage" runat="server"></asp:LinkButton>
                                     </td>
                                     <td class="pagePrevNumber">
-                                        <asp:LinkButton CommandName="Page" CommandArgument="Prev" ID="lnkPrevPage" runat="server">Previous</asp:LinkButton>
+                                        <asp:LinkButton CommandName="Page" CommandArgument="Prev" ID="lnkPrevPage" runat="server"></asp:LinkButton>
                                     </td>
                                     <td width="100%">
                                         <div align="center">
@@ -50,21 +50,21 @@
                                                 <tr>
                                                     <td>
                                                         <asp:LinkButton CommandName="PageGroup" CommandArgument="Prev" ID="lnkPrevPageGroup"
-                                                            runat="server" OnClick="lnkPrevPageGroup_OnClick">.....</asp:LinkButton>
+                                                            runat="server" OnClick="lnkPrevPageGroup_OnClick">Previous</asp:LinkButton>
                                                     </td>
                                                     <td>
                                                         <asp:LinkButton CommandName="PageGroup" CommandArgument="Next" ID="lnkNextPageGroup"
-                                                            runat="server" OnClick="lnkNextPageGroup_OnClick">.....</asp:LinkButton>
+                                                            runat="server" OnClick="lnkNextPageGroup_OnClick">Next</asp:LinkButton>
                                                     </td>
                                                 </tr>
                                             </table>
                                         </div>
                                     </td>
                                     <td class="pageNextNumber">
-                                        <asp:LinkButton CommandName="Page" CommandArgument="Next" ID="lnkNextPage" runat="server">Next</asp:LinkButton>
+                                        <asp:LinkButton CommandName="Page" CommandArgument="Next" ID="lnkNextPage" runat="server"></asp:LinkButton>
                                     </td>
                                     <td class="pageLast">
-                                        <asp:LinkButton CommandName="Page" CommandArgument="Last" ID="lnkLastPage" runat="server">»</asp:LinkButton>
+                                        <asp:LinkButton CommandName="Page" CommandArgument="Last" ID="lnkLastPage" runat="server"></asp:LinkButton>
                                     </td>
                                 </tr>
                             </table>

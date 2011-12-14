@@ -188,11 +188,14 @@ namespace Connects.Profiles.DataAccess
                     userPref.Photo = dr["Photo"].ToString();
                     userPref.Publications = dr["Publications"].ToString();
                     userPref.PhotoPref = Int32.Parse((dr["PhotoPreference"].ToString()));
+                    userPref.ProfileExists = true;
                 }
             }
-            catch (Exception e)
+            catch
             {
-                throw new Exception(e.Message);
+
+                userPref.ProfileExists = false;
+
             }
 
             return userPref;
@@ -280,7 +283,7 @@ namespace Connects.Profiles.DataAccess
             try
             {
                 Database db = DatabaseFactory.CreateDatabase();
-                    
+
                 string sqlCommand = "usp_GetProxies";
                 DbCommand dbCommand = db.GetStoredProcCommand(sqlCommand);
 
@@ -799,20 +802,20 @@ namespace Connects.Profiles.DataAccess
                 System.Text.StringBuilder sql = new StringBuilder();
 
                 sql.Append(" with ReturnData as (  select * from ( select m.*, g.semanticgroupname,row_number() ");
-				sql.Append("		over (	partition by g.semanticgroupname order by m.weight desc, m.mesh_header desc) as [Rank] ");
-				sql.Append("		from (select meshheader mesh_header, sum(meshweight) as weight  ");
-				sql.Append("				from cache_pub_mesh where personid = " + personId.ToString());
-				sql.Append("				group by meshheader) as m, ");
-				sql.Append("		mesh_descriptors as d, mesh_semantic_groups as g  ");
-				sql.Append("		where m.mesh_header = d.descriptorname and d.descriptorui = g.descriptorui	) ");
-		        sql.Append("    x where Rank <= 10 ), ");
-		        sql.Append("    v as ( select semanticgroupname, max(weight) w, count(*) n  ");
-				sql.Append("    from ReturnData  ");
-				sql.Append("    group by semanticgroupname )  ");
-			    sql.Append("    select ReturnData.*,(ReturnData.weight/v.w) as weight, n, (select sum(n) from v) Total ");
-			    sql.Append("    from ReturnData, v  ");
-			    sql.Append("    where ReturnData.semanticgroupname = v.semanticgroupname  ");
-			    sql.Append("    order by semanticgroupname, w desc, mesh_header  ");
+                sql.Append("		over (	partition by g.semanticgroupname order by m.weight desc, m.mesh_header desc) as [Rank] ");
+                sql.Append("		from (select meshheader mesh_header, sum(meshweight) as weight  ");
+                sql.Append("				from cache_pub_mesh where personid = " + personId.ToString());
+                sql.Append("				group by meshheader) as m, ");
+                sql.Append("		mesh_descriptors as d, mesh_semantic_groups as g  ");
+                sql.Append("		where m.mesh_header = d.descriptorname and d.descriptorui = g.descriptorui	) ");
+                sql.Append("    x where Rank <= 10 ), ");
+                sql.Append("    v as ( select semanticgroupname, max(weight) w, count(*) n  ");
+                sql.Append("    from ReturnData  ");
+                sql.Append("    group by semanticgroupname )  ");
+                sql.Append("    select ReturnData.*,(ReturnData.weight/v.w) as weight, n, (select sum(n) from v) Total ");
+                sql.Append("    from ReturnData, v  ");
+                sql.Append("    where ReturnData.semanticgroupname = v.semanticgroupname  ");
+                sql.Append("    order by semanticgroupname, w desc, mesh_header  ");
 
                 DbCommand dbCommand = db.GetSqlStringCommand(sql.ToString());
 
@@ -820,7 +823,7 @@ namespace Connects.Profiles.DataAccess
                 ds = db.ExecuteDataSet(dbCommand);
 
                 Int32 int32Val = ds.Tables[0].Rows.Count;
-              
+
                 TotalCount = int32Val;
             }
             catch (Exception e)
