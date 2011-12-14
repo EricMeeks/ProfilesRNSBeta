@@ -51,6 +51,7 @@ public partial class UserControls_ucPassiveNetwork : System.Web.UI.UserControl
             ProfileServiceAdapter pa = new ProfileServiceAdapter();
 
             bool isSecure = System.Convert.ToBoolean(ConfigUtil.GetConfigItem("IsSecure"));
+            pr.Version = 2;
             PersonList pl = pa.ProfileSearch(pr, isSecure);
 
             if (pl.Person[0].PassiveNetworks != null)

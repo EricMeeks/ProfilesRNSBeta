@@ -69,6 +69,7 @@ public partial class Connection : System.Web.UI.Page
 
         PublicationMatchDetailList pmdl = new Connects.Profiles.Service.ServiceImplementation.ProfileService().GetProfilePublicationMatchSummary(personQuery);
 
+        personQuery.Version = 2;
         PersonList thisPerson = new Connects.Profiles.Service.ServiceImplementation.ProfileService().ProfileSearch(personQuery);
         lstViewHeader.DataSource = thisPerson.Person;
         lstViewHeader.DataBind();

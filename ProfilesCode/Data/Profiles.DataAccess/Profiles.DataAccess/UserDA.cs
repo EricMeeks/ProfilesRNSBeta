@@ -327,6 +327,7 @@ namespace Connects.Profiles.DataAccess
                 db.AddInParameter(dbCommand, "designated", DbType.String, designated);
                 db.AddInParameter(dbCommand, "default", DbType.String, showDefault);
                 db.AddInParameter(dbCommand, "showall", DbType.String, showAll);
+                db.AddInParameter(dbCommand, "showHiddenDefaults", DbType.String, showHiddenDefaults);
 
                 reader = db.ExecuteReader(dbCommand);
             }
@@ -351,9 +352,9 @@ namespace Connects.Profiles.DataAccess
 
                 db.AddInParameter(dbCommand, "proxy", DbType.Int32, proxy);
                 db.AddInParameter(dbCommand, "designated", DbType.String, "Y");
-                db.AddInParameter(dbCommand, "default", DbType.String, "N");
+                db.AddInParameter(dbCommand, "default", DbType.String, "Y");
                 db.AddInParameter(dbCommand, "showall", DbType.String, "Y");
-
+                db.AddInParameter(dbCommand, "showHiddenDefaults", DbType.String, "Y");
 
                 ds = db.ExecuteDataSet(dbCommand);
             }

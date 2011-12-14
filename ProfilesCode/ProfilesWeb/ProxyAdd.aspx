@@ -60,8 +60,7 @@
                         </div>
                     </td>
                 </tr>
-            </table>
-            <div class="sectionHeader"><asp:Literal ID="litGridHeader" runat="server" /></div>
+            </table>           
         </asp:Panel>
         <asp:Panel ID="pnlProxySearchResults" runat="server" Visible="false">
             <div style="margin-top: 8px;">

@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ucProfileBaseInfo.ascx.cs"
     Inherits="UserControls_ucProfileBaseInfo" %>
-     <%--
+<%--
     Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
     Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
     and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
@@ -9,8 +9,10 @@
 
     Code licensed under a BSD License. 
     For details, see: LICENSE.txt 
- --%> 
-<asp:DataList ID="dlistProfileInfo" runat="server" border="0" CellSpacing="0" CellPadding="0" OnItemDataBound="dlistProfileInfo_ItemDataBound" ShowHeader="false" ShowFooter="false" RepeatLayout="Flow">
+ --%>
+<asp:DataList ID="dlistProfileInfo" runat="server" border="0" CellSpacing="0" CellPadding="0"
+    OnItemDataBound="dlistProfileInfo_ItemDataBound" ShowHeader="false" ShowFooter="false"
+    RepeatLayout="Flow">
     <ItemTemplate>
         <table>
             <tr id="Tr1" runat="server" visible='<%# GetJobTitle(Eval("AffiliationList"),0) == null ? false : true %>'>
@@ -21,7 +23,7 @@
                     <asp:Label ID="lblAcademicTitle" runat="server" Text='<%# GetJobTitle(Eval("AffiliationList"),0) %>'></asp:Label>
                 </td>
             </tr>
-          <tr id="Tr4" runat="server" visible='<%# GetInstitutionText(Eval("AffiliationList"),0) == null ? false : true %>'>
+            <tr id="Tr4" runat="server" visible='<%# GetInstitutionText(Eval("AffiliationList"),0) == null ? false : true %>'>
                 <td class="basicInfoLabelCol">
                     <asp:Label ID="lblInstitutionText" runat="server" Text="Institution" CssClass="basicInfoLabel"></asp:Label>
                 </td>
@@ -37,7 +39,7 @@
                     <asp:Label ID="lblDepartment" runat="server" Text='<%# GetDepartmentText(Eval("AffiliationList"),0) %>'></asp:Label>
                 </td>
             </tr>
-            <tr id="Tr8" runat="server" Visible='<%# GetDivisionText(Eval("AffiliationList"),0) == null ? false : true %>'>
+            <tr id="Tr8" runat="server" visible='<%# GetDivisionText(Eval("AffiliationList"),0) == null ? false : true %>'>
                 <td class="basicInfoLabelCol">
                     <asp:Label ID="lblDivisionText" runat="server" Text="Division" CssClass="basicInfoLabel"></asp:Label>
                 </td>
@@ -45,29 +47,22 @@
                     <asp:Label ID="lblDivision" runat="server" Text='<%# GetDivisionText(Eval("AffiliationList"),0) %>'></asp:Label>
                 </td>
             </tr>
-
             <tr>
                 <td class="basicInfoLabelCol">
                     <asp:Label ID="lblAddressText" runat="server" Text="Address" CssClass="basicInfoLabel"></asp:Label>
                 </td>
                 <td>
-                    <asp:Label ID="lblAddress2" runat="server"
-                        Visible='<%# Eval("Address.Address2")==null ? false : true %>'
+                    <asp:Label ID="lblAddress2" runat="server" Visible='<%# Eval("Address.Address2")==null ? false : true %>'
                         Text='<%# DataBinder.Eval(Container.DataItem, "Address.Address2") + "<br>"%>'
                         CssClass="basicInfoAddress"></asp:Label>
-
-                    <asp:Label ID="lblAddress3" runat="server"
-                        Visible='<%# Eval("Address.Address3")==null ? false : true %>'
+                    <asp:Label ID="lblAddress3" runat="server" Visible='<%# Eval("Address.Address3")==null ? false : true %>'
                         Text='<%# DataBinder.Eval(Container.DataItem, "Address.Address3") + "<br>"%>'
                         CssClass="basicInfoAddress"></asp:Label>
-
-                    <asp:Label ID="lblAddress4" runat="server" 
-                        Visible='<%# Eval("Address.Address4")==null ? false : true %>'
+                    <asp:Label ID="lblAddress4" runat="server" Visible='<%# Eval("Address.Address4")==null ? false : true %>'
                         Text='<%# DataBinder.Eval(Container.DataItem, "Address.Address4") + "<br>"%>'
                         CssClass="basicInfoAddress"></asp:Label>
                 </td>
             </tr>
-      
             <tr id="Tr5" runat="server" visible='<%# DataBinder.Eval(Container.DataItem, "Address.Telephone") == null ? false : true %>'>
                 <td class="basicInfoLabelCol">
                     <asp:Label ID="lblTelePhoneText" runat="server" Text="Telephone" CssClass="basicInfoLabel"></asp:Label>
@@ -98,9 +93,10 @@
 </asp:DataList>
 <asp:Repeater ID="rptrTitles" runat="server">
     <HeaderTemplate>
-        <div class="sectionHeader""><asp:Label ID="lblOtherPos" runat="server">Other Positions</asp:Label></div>
+        <div class="sectionHeader"">
+            <asp:Label ID="lblOtherPos" runat="server">Other Positions</asp:Label></div>
     </HeaderTemplate>
-    <ItemTemplate>  
+    <ItemTemplate>
         <table cellpadding="0" cellspacing="0">
             <tr id="tr10" runat="server" visible='<%# Convert.ToString(DataBinder.Eval(Container.DataItem, "Title")).Length > 0 %>'>
                 <td class="basicInfoLabelCol">
@@ -137,6 +133,12 @@
         </table>
     </ItemTemplate>
     <SeparatorTemplate>
-        <tr><td colspan="2">&nbsp;</td></tr>
+        <table>
+            <tr>
+                <td colspan="2">
+                    &nbsp;
+                </td>
+            </tr>
+        </table>
     </SeparatorTemplate>
 </asp:Repeater>

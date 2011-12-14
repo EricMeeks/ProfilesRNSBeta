@@ -98,6 +98,9 @@ namespace Connects.Profiles.Service.ServiceImplementation
 
         public PublicationMatchDetailList GetProfilePublicationMatchSummary(Connects.Profiles.Service.DataContracts.Profiles qd)
         {
+            
+
+
             return new ProfileServiceAdapter().GetProfilePublicationMatchSummary(qd, false);
         }
 

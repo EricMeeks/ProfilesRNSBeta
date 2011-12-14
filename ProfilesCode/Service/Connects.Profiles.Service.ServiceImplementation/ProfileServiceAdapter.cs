@@ -130,7 +130,7 @@ namespace Connects.Profiles.Service.ServiceImplementation
             profiles.OutputOptions = oo;
 
             bool isSecure = System.Convert.ToBoolean(ConfigUtil.GetConfigItem("IsSecure"));
-
+            profiles.Version = 2;
 
             return ProfileSearch(profiles, isSecure);
         }
@@ -181,7 +181,7 @@ namespace Connects.Profiles.Service.ServiceImplementation
 
 
                         bool isSecure = System.Convert.ToBoolean(ConfigUtil.GetConfigItem("IsSecure"));
-
+                        profiles.Version = 2;
                         returnPeople = ProfileSearch(profiles, isSecure);
 
                         //Filter out the current profile you are viewing.
@@ -225,7 +225,7 @@ namespace Connects.Profiles.Service.ServiceImplementation
 
             profiles.OutputOptions = oo;
             bool isSecure = System.Convert.ToBoolean(ConfigUtil.GetConfigItem("IsSecure"));
-
+            profiles.Version = 2;
             PersonList resp = ProfileSearch(profiles, isSecure);
 
             personId = Convert.ToInt32(resp.Person[0].PersonID);
@@ -264,14 +264,15 @@ namespace Connects.Profiles.Service.ServiceImplementation
 
         public PublicationMatchDetailList GetProfilePublicationMatchSummary(Connects.Profiles.Service.DataContracts.Profiles qd, bool isSecure)
         {
+            qd.Version = 2;
+
             PersonList pl = ProfileSearch(qd, isSecure);
             PublicationMatchDetailList pubMatch = new PublicationMatchDetailList();
             HashSet<string> searchPhraseDistinct = new HashSet<string>();
             HashSet<string> publicationPhraseDistinct = new HashSet<string>();
 
             if (pl != null)
-            {
-
+            {                
 
                 foreach (Publication pub in pl.Person[0].PublicationList)
                 {

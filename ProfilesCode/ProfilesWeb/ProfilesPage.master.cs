@@ -55,11 +55,14 @@ public partial class ProfilesPage : System.Web.UI.MasterPage
             if (Profile.HasProfile==true)
             {
                 hypViewMyProfile.Visible = true;
-                hypEditMyProfile.Visible = true;
-                hypManageProxies.Visible = true;
                 hypViewMyProfile.NavigateUrl = "~/ProfileDetails.aspx?Person=" + Profile.ProfileId;
+
+                hypManageProxies.Visible = true;
+                hypManageProxies.NavigateUrl = "~/Proxy.aspx";                
+
+                hypEditMyProfile.Visible = true;
                 hypEditMyProfile.NavigateUrl = "~/ProfileEdit.aspx?From=Self&Person=" + Profile.ProfileId;
-                hypManageProxies.NavigateUrl = "~/Proxy.aspx";
+                
                 //lblDisplayName.Text = Profile.DisplayName;
             }
             else if (_UserBL.GetMyProxies(Profile.UserId).Length > 0)

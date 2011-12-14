@@ -1,5 +1,5 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/ProfilesPage.master" CodeFile="Search.aspx.cs" ValidateRequest="true"
-    Inherits="Search" Title="Profiles | Search" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/ProfilesPage.master" CodeFile="Search.aspx.cs"
+    ValidateRequest="true" Inherits="Search" Title="Profiles | Search" %>
 
 <%@ Register Src="UserControls/ucProfileBaseInfo.ascx" TagName="ProfileBaseInfo"
     TagPrefix="ucProfileBaseInfo" %>
@@ -7,7 +7,7 @@
 <%@ Register Src="UserControls/ComboTreeCheck.ascx" TagName="ComboTreeCheck" TagPrefix="uc1" %>
 <%@ Reference Control="UserControls/ucMiniSearch.ascx" %>
 <%@ MasterType VirtualPath="~/ProfilesPage.master" %>
- <%--
+<%--
     Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
     Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
     and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
@@ -16,7 +16,7 @@
 
     Code licensed under a BSD License. 
     For details, see: LICENSE.txt 
- --%> 
+ --%>
 <asp:Content ID="Content4" ContentPlaceHolderID="HeadContentPlaceHolder2" runat="Server">
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="HeadingContentPlaceHolder" runat="Server">
@@ -181,7 +181,7 @@
                             &nbsp;
                         </td>
                     </tr>
-                    <tr id="trMoreOptions" >
+                    <tr id="trMoreOptions">
                         <th>
                             More Options
                         </th>
@@ -193,9 +193,6 @@
                         </td>
                     </tr>
                 </table>
-
-              
-
             </div>
             <table class="submitTable">
                 <tr>
@@ -254,18 +251,19 @@
                         <%-- <asp:ListItem Selected="False" Value="Division">Division (A-Z)</asp:ListItem>
                         <asp:ListItem Selected="False" Value="Division_DESC">Division (Z-A)</asp:ListItem>--%>
                     </asp:ListBox>
-                    <span style="display: none" id="spanDisplayColumns">
-                        &nbsp;<span class="selectSortLabel">Display Columns:</span>
+                    <span style="display: none" id="spanDisplayColumns">&nbsp;<span class="selectSortLabel">Display
+                        Columns:</span>
                         <asp:ListBox SelectionMode="Multiple" runat="server" ID="lstColumns" Height="20"
                             AutoPostBack="true" OnSelectedIndexChanged="lstColumns_SelectedIndexChanged" />
                     </span>
                 </td>
             </tr>
         </table>
-        
-                <script language="javascript" type="text/javascript">
-                    document.getElementById('spanDisplayColumns').style.display = '';   
-                </script>
+
+        <script language="javascript" type="text/javascript">
+            document.getElementById('spanDisplayColumns').style.display = '';   
+        </script>
+
         <div>
             <asp:GridView ID="grdSearchResults" EnableViewState="false" runat="server" AutoGenerateColumns="False"
                 AllowPaging="True" AllowSorting="true" CellSpacing="0" GridLines="Both" DataKeyNames="PersonID,Name"

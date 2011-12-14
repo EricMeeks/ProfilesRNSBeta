@@ -47,15 +47,18 @@ public partial class Proxy : BasePageSecure
         IDataReader reader = null;
         try
         {
-            // this needs to be refactored to use bool instead of "Y" "N"
-            reader = _userBL.GetProxies(Profile.ProfileId, 0, "Y", "N", "Y", "Y");
+            //Designated Proxies
+            //string designated, string showDefault, string showAll, string showHiddenDefaults
+            reader = _userBL.GetProxies(Profile.ProfileId,0,"Y", "N", "Y", "N");
             GridView1.DataSource = reader;
             GridView1.DataBind();
 
             reader.Close();
-
-            // this needs to be refactored to use bool instead of "Y" "N"
-            reader = _userBL.GetProxies(Profile.ProfileId, 0, "N", "Y", "Y", "Y");
+            
+                        
+            //Default Proxies
+            //string designated, string showDefault, string showAll, string showHiddenDefaults
+            reader = _userBL.GetProxies(Profile.ProfileId, 0, "N", "Y", "Y", "N");
             GridView2.DataSource = reader;
             GridView2.DataBind();
         }

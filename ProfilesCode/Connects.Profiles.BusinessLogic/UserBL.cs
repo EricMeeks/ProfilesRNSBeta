@@ -125,7 +125,7 @@ namespace Connects.Profiles.BusinessLogic
         public string GetMyProxies(int proxy)
         {
             //string key = "MyProxies" + "_" + proxy.ToString();
-            string myProxies = string.Empty;// (string)primitivesCache.GetData(key);
+            string myProxies = string.Empty;            
 
             //if (myProxies == null)
             //{

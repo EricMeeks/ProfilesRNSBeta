@@ -30,7 +30,7 @@ public partial class login : BasePage
     protected void loginControl_LoggedIn(object sender, EventArgs e)
     {
         ProfilesMembershipUser user = (ProfilesMembershipUser)Membership.GetUser(((Login)sender).UserName);
-
+        
         // Get an instance of the ProfileCommon object
         ProfileCommon p = (ProfileCommon)ProfileCommon.Create(user.UserName, true);
 
@@ -40,6 +40,7 @@ public partial class login : BasePage
         p.HasProfile = user.HasProfile;
         p.ProfileId = user.ProfileID;
         p.DisplayName = user.DisplayName;
+        
         
         // Persist the profile data
         p.Save();

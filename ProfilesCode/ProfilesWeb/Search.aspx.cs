@@ -486,7 +486,7 @@ public partial class Search : BasePage
                 keywordString = this.HTMLEncode(txtKeyword.Text.Trim());
 
                 searchReq.QueryDefinition.Keywords.KeywordString.Text = keywordString;
-               
+
 
                 ((List<string>)Session["ProfileSearchRequestKeywordList"]).Add(keywordString);
             }
@@ -588,7 +588,7 @@ public partial class Search : BasePage
         // Keywords
         if (keywordString.Length > 0)
         {
-            profiles.QueryDefinition.Keywords.KeywordString.Text =  keywordString;
+            profiles.QueryDefinition.Keywords.KeywordString.Text = keywordString;
             //if there is a space char in the string, then its a group of words coming from the Most Viewed..
             if (keywordString.Trim().Contains(" "))
             {
@@ -744,10 +744,8 @@ public partial class Search : BasePage
                 _rebound = true;
 
 
-
                 try { if (Request["page"].ToString() != "0") { ProcessProfileSearch(); } }
                 catch { ProcessProfileSearch(); }
-
 
 
             }
@@ -905,7 +903,6 @@ public partial class Search : BasePage
     }
 
     #endregion
-
 
     #region Search Results Control Events
     protected void lstSelectCol_SelectedIndexChanged(object sender, EventArgs e)
@@ -1095,6 +1092,7 @@ public partial class Search : BasePage
     }
 
     #endregion
+
     #region Grid Data Binding Helpers
 
     protected string GetInstitutionText(object affiliationList)
@@ -1155,17 +1153,41 @@ public partial class Search : BasePage
 
     protected void SetGridColumns()
     {
-
         bool needToRefreshColumns = true;
 
         if (lstColumns.Items.Count != 0)
+        {
             needToRefreshColumns = false;
+            Session["SEARCH_COLS"] = lstColumns;
+        }
+      
 
         //when selected column names count = 0  
         if (needToRefreshColumns)
         {
             //get Default selected columns from web.config in appSettings
             string l_defaultColumnsFromConfig = ConfigUtil.GetConfigItem("ProfileSearchDefaultColumns");
+
+
+                ListBox lstcolumns = null;
+                if (Session["SEARCH_COLS"] != null) {
+                    lstcolumns = (ListBox)Session["SEARCH_COLS"];
+                    foreach(ListItem item in lstcolumns.Items)
+                    {
+                        if (item.Selected)
+                        {
+                            if (!l_defaultColumnsFromConfig.Contains(item.Text)) {
+                                l_defaultColumnsFromConfig = l_defaultColumnsFromConfig + "," + item.Text;
+                            }
+                        }
+                    }
+                    
+
+                }
+
+
+
+
             string[] l_defaultColumnsArr = l_defaultColumnsFromConfig.Split(',');
 
             List<string> l_AllColumns = new List<string>();
@@ -1179,29 +1201,32 @@ public partial class Search : BasePage
             l_AllColumns.Remove("Division");
 
             //bind listBox
-            lstColumns.Items.Clear();
-            lstColumns.DataSource = l_AllColumns;
-            lstColumns.DataBind();
-
-            //check "default" listBoxItems 
-            foreach (ListItem l_Item in lstColumns.Items)
-            {
-                foreach (string columnName in l_defaultColumnsArr)
+            
+                lstColumns.Items.Clear();
+                lstColumns.DataSource = l_AllColumns;
+                lstColumns.DataBind();
+            
+            
+                //check "default" listBoxItems 
+                foreach (ListItem l_Item in lstColumns.Items)
                 {
-                    //after split operation <string.split(',')> the last element usually is space
-                    //so we must validate each value
-                    if (!string.IsNullOrEmpty(columnName))
+                    foreach (string columnName in l_defaultColumnsArr)
                     {
-                        if (columnName == l_Item.Value)
+                        //after split operation <string.split(',')> the last element usually is space
+                        //so we must validate each value
+                        if (!string.IsNullOrEmpty(columnName))
                         {
-                            l_Item.Selected = true;
+                            if (columnName == l_Item.Value)
+                            {
+                                l_Item.Selected = true;
+                            }
                         }
                     }
-                }
 
-                if (l_Item.Value == "Name")
-                    l_Item.Enabled = false;
-            }
+                    if (l_Item.Value == "Name")
+                        l_Item.Enabled = false;
+                }
+            
         }
 
         for (int i = 1; i < grdSearchResults.Columns.Count; i++)
@@ -1224,6 +1249,7 @@ public partial class Search : BasePage
                     }
                 }
             }
+
             l_Field.Visible = l_isVisibleColumn;
         }
 
@@ -1235,7 +1261,6 @@ public partial class Search : BasePage
             else
                 grdSearchResults.Columns[grdSearchResults.Columns.Count - 2].Visible = false;
         }
-
 
     }
 

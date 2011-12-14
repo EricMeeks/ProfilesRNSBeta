@@ -62,7 +62,7 @@ public partial class UserControls_ucCoAuthorGrid : BaseUserControl
         reqOutputFilterList.OutputFilter = reqFilterList;
 
         searchReq.OutputOptions.OutputFilterList = reqOutputFilterList;
-
+                
         grdAuthors.DataSource = new Connects.Profiles.Service.ServiceImplementation.ProfileService().ProfileSearch(searchReq).Person[0].PassiveNetworks.CoAuthorList.CoAuthor;
         grdAuthors.DataBind();
 

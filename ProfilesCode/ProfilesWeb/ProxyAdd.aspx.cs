@@ -76,7 +76,7 @@ public partial class ProxyAdd : BasePageSecure
             gridSearchResults.DataSource = MyDataSet;
             gridSearchResults.DataBind();
 
-            litGridHeader.Text = "Search Results (" + gridSearchResults.Rows.Count.ToString() +")";
+            
 
             pnlProxySearchResults.Visible = true;
         }
@@ -113,8 +113,7 @@ public partial class ProxyAdd : BasePageSecure
         txtFirstName.Text = "";
         drpInstitution.SelectedIndex = -1;
         drpDepartment.SelectedIndex = -1;
-        gridSearchResults.DataBind();
-        litGridHeader.Text = "";
+        gridSearchResults.DataBind();        
         pnlProxySearchResults.Visible = false;
     }
 

@@ -139,7 +139,7 @@ public partial class ProfileEdit : BasePageSecure
                         try
                         {
                             // PRG - Verify This
-                            reader = _userBL.GetProxies(_personId, Profile.UserId, "Y", "Y", "N", "Y");
+                            reader = _userBL.GetProxies(_personId, Profile.UserId, "Y", "Y", "Y", "Y");
                             if (reader.Read())
                             {
                                 if (!Convert.ToBoolean(reader["editawards"]))
