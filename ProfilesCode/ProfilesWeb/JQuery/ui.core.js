@@ -2,8 +2,8 @@
  * jQuery UI @VERSION
  *
  * Copyright (c) 2008 Paul Bakaus (ui.jquery.com)
- * Dual licensed under the MIT (MIT-LICENSE.txt)
- * and GPL (GPL-LICENSE.txt) licenses.
+ * Dual licensed under the MIT (MIT-For details, see: LICENSE.txt )
+ * and GPL (GPL-For details, see: LICENSE.txt ) licenses.
  *
  * http://docs.jquery.com/UI
  */

@@ -3,8 +3,8 @@
     * ui.dropdownchecklist
     *
     * Copyright (c) 2008 Adrian Tosca
-    * Dual licensed under the MIT (MIT-LICENSE.txt)
-    * and GPL (GPL-LICENSE.txt) licenses.
+    * Dual licensed under the MIT (MIT-For details, see: LICENSE.txt )
+    * and GPL (GPL-For details, see: LICENSE.txt ) licenses.
     * 
     */
     // The dropdown check list jQuery plugin transforms a regular select html element into a dropdown check list. 

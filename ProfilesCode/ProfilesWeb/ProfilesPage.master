@@ -6,15 +6,23 @@
 <%@ Register Src="UserControls/ucMiniSearch.ascx" TagName="MiniSearch" TagPrefix="ucMiniSearch" %>
 <%@ Register Src="header.ascx" TagName="Header" TagPrefix="ucHeader" %>
 <%@ Register Src="footer.ascx" TagName="Footer" TagPrefix="ucFooter" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="HeadContentPlaceHolder" runat="Server">
-    <base href="<%=ConfigurationManager.AppSettings["URLBase"].ToString() %>" />
+ <%--
+    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
+    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
+    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
+    National Center for Research Resources and Harvard University.
 
+
+    Code licensed under a BSD License. 
+    For details, see: LICENSE.txt 
+ --%> 
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContentPlaceHolder" runat="Server">
+    <base href="<%=CheckForSecureConnection()%>" />
     <link rel="stylesheet" type="text/css" href="CSS/People.css" />
     <link rel="stylesheet" type="text/css" href="CSS/resnav.css" />
     <link rel="stylesheet" type="text/css" href="CSS/header_footer.css" />
     <link rel="stylesheet" type="text/css" href="CSS/profiles.css" />
     <link rel="stylesheet" type="text/css" href="JQuery/ui.dropdownchecklist.css" />
-
 
 
     <link rel="stylesheet" type="text/css" href="CSS/comboTreeCheck.css" />

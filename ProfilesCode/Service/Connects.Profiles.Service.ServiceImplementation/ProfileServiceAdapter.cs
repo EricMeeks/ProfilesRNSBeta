@@ -1,4 +1,16 @@
-﻿using System;
+﻿/*  
+ 
+    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
+    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
+    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
+    National Center for Research Resources and Harvard University.
+
+
+    Code licensed under a BSD License. 
+    For details, see: LICENSE.txt 
+  
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -21,18 +33,18 @@ namespace Connects.Profiles.Service.ServiceImplementation
             PersonList pl = null;
             try
             {
-          
-
                 ProfileSearchBL ps = new ProfileSearchBL();
                 Connects.Profiles.Service.DataContracts.Profiles p = new Connects.Profiles.Service.DataContracts.Profiles();
-
+                
                 //qd.OutputOptions.StartRecord = (Convert.ToInt32(qd.OutputOptions.StartRecord) + 1).ToString();
 
                 string req = XmlUtilities.SerializeToString(qd);
 
-                req = req.Replace("Version=\"0\"", "Version=\"2\"");
+           
+                req = req.Replace("Version=\"0\"", "Version=\"1\"");
+           
 
-                XmlUtilities.logit("Line 1: ProfileServiceAdapter.ProfileSearch(" + req + ")");
+                XmlUtilities.logit("Line 1: ProfileServiceAdapter.ProfileSearch(" + req + "," + isSecure.ToString() +")");
 
                 // If we are enforcing XSD
                 if (Convert.ToBoolean(ConfigUtil.GetConfigItem("EnforceQuerySchema")) == true)
@@ -76,7 +88,8 @@ namespace Connects.Profiles.Service.ServiceImplementation
                     {
                         XmlUtilities.logit("Line 5 and 6: No XSD Required");
                     }
-
+                           
+             
                     pl = XmlUtilities.DeserializeObject(responseXML, type) as PersonList;
 
                     XmlUtilities.logit("Line 7: Returned to requestor");
@@ -87,6 +100,7 @@ namespace Connects.Profiles.Service.ServiceImplementation
             {
                 XmlUtilities.logit("ERROR==> " + ex.Message + " STACK:" + ex.StackTrace + " SOURCE:" + ex.Source);
             }
+            
 
             return pl;
 
@@ -96,7 +110,7 @@ namespace Connects.Profiles.Service.ServiceImplementation
         {
             QueryDefinition qd = new QueryDefinition();
             Connects.Profiles.Service.DataContracts.Profiles profiles = new Connects.Profiles.Service.DataContracts.Profiles();
-
+            profiles.Version = 2;
             profiles.QueryDefinition = qd;
             profiles.QueryDefinition.PersonID = personId.ToString();
 

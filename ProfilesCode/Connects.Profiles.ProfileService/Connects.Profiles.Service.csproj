@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="NetworkBrowserService.svc" />
+    <Content Include="LICENSE.txt" />
     <Content Include="ProfileService.svc" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -97,8 +98,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="schema\PersonList.xsd" />
-    <None Include="schema\Profiles.xsd" />
+    <None Include="schema\Request.xsd" />
+    <None Include="schema\Response.xsd" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

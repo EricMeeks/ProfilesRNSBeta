@@ -1,19 +1,31 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/ProfilesPage.master" Theme="blue" AutoEventWireup="true"
     CodeFile="ProxyEdit.aspx.cs" Inherits="ProxyEdit" Title="Proxies" %>
+ <%--
+    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
+    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
+    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
+    National Center for Research Resources and Harvard University.
 
+
+    Code licensed under a BSD License. 
+    For details, see: LICENSE.txt 
+ --%> 
 <asp:Content ID="Content1" ContentPlaceHolderID="MiddleContentPlaceHolder" runat="Server">
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td><div class="pageTitle"><asp:Literal ID="ltHeader" runat="server"/></div></td>
-            <td><div style="text-align: right; padding-right: 8px;"><a onclick="history.back();">Back</a></div></td>
+            <td><div style="text-align: right; padding-right: 8px;"><a onclick="history.back();">
+                Back</a></div></td>
         </tr>
     </table>
     <div style="margin-top: 10px;">
         <asp:GridView ID="gridProxies" runat="server" DataKeyNames="PersonId" AllowPaging="true"
             PageSize="20" EmptyDataText="No proxies have been designated." AutoGenerateColumns="False"
-            OnRowDataBound="gridProxies_RowDataBound" OnSelectedIndexChanged="gridProxies_SelectedIndexChanged" OnPageIndexChanged="gridProxies_PageIndexChanged"
-            OnRowDeleting="gridProxies_RowDeleting" OnPageIndexChanging="gridProxies_PageIndexChanging" OnDataBound="gridProxies_DataBound"
-            CssClass="searchResults">
+            OnRowDataBound="gridProxies_RowDataBound" 
+            OnSelectedIndexChanged="gridProxies_SelectedIndexChanged" OnPageIndexChanged="gridProxies_PageIndexChanged"
+            OnRowDeleting="gridProxies_RowDeleting" 
+            OnPageIndexChanging="gridProxies_PageIndexChanging" OnDataBound="gridProxies_DataBound"
+            CssClass="searchResults" Width="818px">
             <RowStyle CssClass="searchResultsRow" />
             <AlternatingRowStyle CssClass="searchResultsAltRow" />
             <HeaderStyle CssClass="searchResultsHeader" />
@@ -21,7 +33,7 @@
             <PagerStyle CssClass="searchResultsPager" />
             <PagerTemplate>
                 <table id="pagerOuterTable" class="pagerOuterTable" runat="server" cellpadding="0" cellspacing="0" width="100%">
-                    <tr>
+                    <tr>                    
                         <td>
                             <table id="pagerInnerTable" class="pagerInnerTable" cellpadding="0" cellspacing="0"
                                 runat="server" width="100%">

@@ -1,4 +1,16 @@
-﻿using System.Xml.Serialization;
+﻿/*  
+ 
+    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
+    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
+    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
+    National Center for Research Resources and Harvard University.
+
+
+    Code licensed under a BSD License. 
+    For details, see: LICENSE.txt 
+  
+*/
+using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 
@@ -142,7 +154,7 @@ namespace Connects.Profiles.Service.DataContracts
 
         // unique
         private PublicationList publicationsField;
-
+        private Publications publications;        
         private PassiveNetworks passiveNetworksField;
 
         private string queryRelevanceField;
@@ -150,7 +162,7 @@ namespace Connects.Profiles.Service.DataContracts
         private bool visibleField;
 
         // unique
-        [DataMember(IsRequired = false, Name = "PersonID", Order = 1)]
+        [DataMember(IsRequired = false, Name = "PersonID")]
         public string PersonID
         {
             get
@@ -164,7 +176,7 @@ namespace Connects.Profiles.Service.DataContracts
         }
 
         [XmlElement(ElementName="Name")]
-        [DataMember(IsRequired = false, Name = "Name", Order = 2)]
+        [DataMember(IsRequired = false, Name = "Name")]
         public NamePerson Name
         {
             get
@@ -177,9 +189,9 @@ namespace Connects.Profiles.Service.DataContracts
             }
         }
 
-        [XmlElement(ElementName = "InternalID")]
-        [DataMember(IsRequired = false, Name = "InternalIDList", Order = 3)]
-        public InternalIDList InternalID
+        [XmlElement(ElementName = "InternalIDList")]
+        [DataMember(IsRequired = false, Name = "InternalIDList")]
+        public InternalIDList InternalIDList
         {
             get
             {
@@ -192,7 +204,7 @@ namespace Connects.Profiles.Service.DataContracts
         }
 
         [XmlElement(ElementName = "Address")]
-        [DataMember(IsRequired = false, Name = "Address", Order = 4)]
+        [DataMember(IsRequired = false, Name = "Address")]
         public Address Address
         {
             get
@@ -206,7 +218,7 @@ namespace Connects.Profiles.Service.DataContracts
         }
 
         [XmlElement(ElementName = "AffiliationList")]
-        [DataMember(IsRequired = false, Name = "AffiliationList", Order = 5)]
+        [DataMember(IsRequired = false, Name = "AffiliationList")]
         public AffiliationListPerson AffiliationList
         {
             get
@@ -219,7 +231,7 @@ namespace Connects.Profiles.Service.DataContracts
             }
         }
 
-        [DataMember(IsRequired = false, Name = "ProfileURL", Order = 6)]
+        [DataMember(IsRequired = false, Name = "ProfileURL")]
         public ProfileURL ProfileURL
         {
             get
@@ -232,7 +244,7 @@ namespace Connects.Profiles.Service.DataContracts
             }
         }
 
-        [DataMember(IsRequired = false, Name = "BasicStatistics", Order = 7)]
+        [DataMember(IsRequired = false, Name = "BasicStatistics")]
         public BasicStatistics BasicStatistics
         {
             get
@@ -245,7 +257,7 @@ namespace Connects.Profiles.Service.DataContracts
             }
         }
 
-        [DataMember(IsRequired = false, Name = "EmailImageUrl", Order = 8)]
+        [DataMember(IsRequired = false, Name = "EmailImageUrl")]
         public EmailImageUrl EmailImageUrl
         {
             get
@@ -258,7 +270,7 @@ namespace Connects.Profiles.Service.DataContracts
             }
         }
 
-        [DataMember(IsRequired = false, Name = "PhotoUrl", Order = 9)]
+        [DataMember(IsRequired = false, Name = "PhotoUrl")]
         public PhotoUrl PhotoUrl
         {
             get
@@ -271,7 +283,7 @@ namespace Connects.Profiles.Service.DataContracts
             }
         }
 
-        [DataMember(IsRequired = false, Name = "AwardList", Order = 10)]
+        [DataMember(IsRequired = false, Name = "AwardList")]
         public AwardList AwardList
         {
             get
@@ -284,7 +296,7 @@ namespace Connects.Profiles.Service.DataContracts
             }
         }
 
-        [DataMember(IsRequired = false, Name = "Narrative", Order = 11)]
+        [DataMember(IsRequired = false, Name = "Narrative")]
         public Narrative Narrative
         {
             get
@@ -296,8 +308,8 @@ namespace Connects.Profiles.Service.DataContracts
                 this.narrativeField = value;
             }
         }
-
-        [DataMember(IsRequired = false, Name = "PublicationList", Order = 12)]
+        
+        [DataMember(IsRequired = false, Name = "PublicationList")]
         public PublicationList PublicationList
         {
             get
@@ -310,7 +322,20 @@ namespace Connects.Profiles.Service.DataContracts
             }
         }
 
-        [DataMember(IsRequired = false, Name = "PassiveNetworks", Order = 13)]
+
+        [DataMember(IsRequired = false, Name = "Publications")]
+        public Publications Publications
+        {
+            get
+            {
+                return this.publications;
+            }
+            set
+            {
+                this.publications = value;
+            }
+        }       
+        [DataMember(IsRequired = false, Name = "PassiveNetworks")]
         public PassiveNetworks PassiveNetworks
         {
             get
@@ -325,7 +350,7 @@ namespace Connects.Profiles.Service.DataContracts
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        [DataMember(IsRequired = false, Name = "QueryRelevance", Order = 14)]
+        [DataMember(IsRequired = false, Name = "QueryRelevance")]
         public string QueryRelevance
         {
             get
@@ -339,7 +364,7 @@ namespace Connects.Profiles.Service.DataContracts
         }
 
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        [DataMember(IsRequired = false, Name = "Visible", Order = 15)]
+        [DataMember(IsRequired = false, Name = "Visible")]
         public bool Visible
         {
             get

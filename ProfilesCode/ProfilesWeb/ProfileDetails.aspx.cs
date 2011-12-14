@@ -1,4 +1,16 @@
-﻿using System;
+﻿/*  
+ 
+    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
+    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
+    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
+    National Center for Research Resources and Harvard University.
+
+
+    Code licensed under a BSD License. 
+    For details, see: LICENSE.txt 
+  
+*/
+using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Connects.Profiles.Common;
@@ -54,6 +66,7 @@ public partial class ProfileDetails : BasePage
         {
             if (_personId > 0)
             {
+
                 personProfileList = new Connects.Profiles.Service.ServiceImplementation.ProfileService().GetPersonFromPersonId(_personId);
                 personProfile = personProfileList.Person[0];
 
@@ -94,7 +107,7 @@ public partial class ProfileDetails : BasePage
     private void ProcessSelfProxyAndHidden()
     {
         if (_personId == Profile.ProfileId)
-        {
+        { 
             imgReach.ImageUrl = "images/reachyou.gif";
             imgReach.Visible = true;
             ShowControl("pnlChkList", false);

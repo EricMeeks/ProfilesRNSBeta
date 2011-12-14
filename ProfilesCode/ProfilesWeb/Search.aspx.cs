@@ -1,4 +1,16 @@
-﻿using System;
+﻿/*  
+ 
+    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
+    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
+    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
+    National Center for Research Resources and Harvard University.
+
+
+    Code licensed under a BSD License. 
+    For details, see: LICENSE.txt 
+  
+*/
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Web.Script.Services;
@@ -474,10 +486,13 @@ public partial class Search : BasePage
                 keywordString = this.HTMLEncode(txtKeyword.Text.Trim());
 
                 searchReq.QueryDefinition.Keywords.KeywordString.Text = keywordString;
+               
 
                 ((List<string>)Session["ProfileSearchRequestKeywordList"]).Add(keywordString);
             }
         }
+
+        searchReq.Version = 2;
 
         // Save the search request into a session object so that the 
         // object data source can use it during the Select event
@@ -543,6 +558,8 @@ public partial class Search : BasePage
             ((List<string>)Session["ProfileSearchRequestKeywordList"]).Add(keyword);
         }
 
+        profiles.Version = 2;
+
         // Save the search request into a session object so that the 
         // object data source can use it during the Select event
         Session["ProfileSearchRequest"] = profiles;
@@ -580,6 +597,8 @@ public partial class Search : BasePage
             // Add the searched keyword to the right side of the page
             ((List<string>)Session["ProfileSearchRequestKeywordList"]).Add(keywordString);
         }
+
+        profiles.Version = 2;
 
         // Save the search request into a session object so that the 
         // object data source can use it during the Select event
@@ -626,6 +645,8 @@ public partial class Search : BasePage
 
             ((List<string>)Session["ProfileSearchRequestCriteriaList"]).Add(affilDeptname.Text);
         }
+
+        profiles.Version = 2;
 
         // Save the search request into a session object so that the 
         // object data source can use it during the Select event

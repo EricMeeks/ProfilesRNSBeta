@@ -7,6 +7,16 @@
 <%@ Register Src="UserControls/ucProfileBaseInfo.ascx" TagName="ProfileBaseInfo"
     TagPrefix="ucProfileBaseInfo" %>
 <%@ Register Assembly="FUA" Namespace="Subgurim.Controles" TagPrefix="cc1" %>
+ <%--
+    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
+    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
+    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
+    National Center for Research Resources and Harvard University.
+
+
+    Code licensed under a BSD License. 
+    For details, see: LICENSE.txt 
+ --%> 
 <asp:Content ID="Content1" ContentPlaceHolderID="MiddleContentPlaceHolder" runat="Server">
 
     <script src="Scripts/JScript.js" type="text/jscript"></script>
@@ -37,7 +47,19 @@
         }
 
         function exclusiveCheckbox(rbNum) {
+
             var rbNamePre = "ctl00_ctl00_middle_MiddleContentPlaceHolder_dlPhotos_ctl0";
+
+            var test = document.getElementById(rbNamePre);
+
+            if (test == null) {                
+                rbNamePre = "middle_MiddleContentPlaceHolder_dlPhotos_ctl0";
+                test = document.getElementById(rbNamePre);
+            }
+            if (test == null) { return; }
+
+
+
             var rbNamePost = "_rbPhoto";
 
             var i = 0;
@@ -56,9 +78,16 @@
             if (rbNum == 9)
                 customMode = true;
 
-            document.getElementById("ctl00_ctl00_middle_MiddleContentPlaceHolder_rbPhotoCustom").checked = customMode;
+            if (document.getElementById("ctl00_ctl00_middle_MiddleContentPlaceHolder_rbPhotoCustom") != null) {
+                document.getElementById("ctl00_ctl00_middle_MiddleContentPlaceHolder_rbPhotoCustom").checked = customMode;
+            }
+            else { document.getElementById("middle_MiddleContentPlaceHolder_rbPhotoCustom").checked = customMode; }
 
-            document.getElementById("ctl00_ctl00_middle_MiddleContentPlaceHolder_hidRbTrack").value = rbNum;
+
+            if (document.getElementById("ctl00_ctl00_middle_MiddleContentPlaceHolder_hidRbTrack") != null) {
+                document.getElementById("ctl00_ctl00_middle_MiddleContentPlaceHolder_hidRbTrack").value = rbNum;
+            } else { document.getElementById("middle_MiddleContentPlaceHolder_hidRbTrack").value = rbNum; }
+
 
             return true;
         }

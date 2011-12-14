@@ -1,4 +1,16 @@
-﻿using System;
+﻿/*  
+ 
+    Copyright (c) 2008-2010 by the President and Fellows of Harvard College. All rights reserved.  
+    Profiles Research Networking Software was developed under the supervision of Griffin M Weber, MD, PhD.,
+    and Harvard Catalyst: The Harvard Clinical and Translational Science Center, with support from the 
+    National Center for Research Resources and Harvard University.
+
+
+    Code licensed under a BSD License. 
+    For details, see: LICENSE.txt 
+  
+*/
+using System;
 using System.Collections;
 using System.Data;
 using System.Web;
@@ -9,6 +21,8 @@ using Connects.Profiles.BusinessLogic;
 using Connects.Profiles.Common;
 using Connects.Profiles.Utility;
 using Subgurim.Controles;
+
+
 
 public partial class ProfileEdit : BasePageSecure
 {
@@ -1479,20 +1493,65 @@ public partial class ProfileEdit : BasePageSecure
 
         // Buil URL to fetch image from database.  Note:  you must append the random number to the URL or the browser will cache the 
         // image and never let it refresh.
-        string js = "var img = window.parent.document.getElementById('ctl00_ctl00_middle_MiddleContentPlaceHolder_imgEditPhoto3'); img.src = '";
+        string js = "var img;";
+        js += "var lnk;";    
+        js += "var pu;";
+        
+        js += "CheckVars();";
+
+        js += "function CheckVars(){";
+        js += "  img  = window.parent.document.getElementById('ctl00_ctl00_middle_MiddleContentPlaceHolder_imgEditPhoto3');";
+
+
         js += " if (img == null) {";
         js += "img = document.getElementById('middle_MiddleContentPlaceHolder_imgEditPhoto3');";
-        js += "if (img == null) { return; }";
         js += "}";
+        js += "if (img == null) { return; }";        
+        js += " img.src = '";        
         js += string.Format("Thumbnail.ashx?id={0}&random={1}", _personId, new Random().Next().ToString());
         js += "';";
-        js += "var pu = window.parent.document.getElementById('divPhotoUpload'); pu.style.display='none';";
-        js += "var lnk = window.parent.document.getElementById('ctl00_ctl00_middle_MiddleContentPlaceHolder_lnkAddCustomPhoto');";
+
+        js += "  lnk  = window.parent.document.getElementById('divPhotoUpload');";
+        js += "  pu  = window.parent.document.getElementById('ctl00_ctl00_middle_MiddleContentPlaceHolder_lnkAddCustomPhoto');";
+        js += " if (pu == null) {";
+        js += "pu = document.getElementById('middle_MiddleContentPlaceHolder_lnkAddCustomPhoto');";
+        js += "}";
+        js += "if (pu == null) { return; }";        
+        js += " pu.style.display='none';";
         js += " if (img == null) {";
         js += "lnk = document.getElementById('middle_MiddleContentPlaceHolder_lnkAddCustomPhoto');";
-        js += "if (lnk == null) { return; }";
         js += "}";
+        js += "if (lnk == null) { return; }";        
         js += "lnk.style.display='none';";
+        js += "}";
+
+
+
+
+
+
+        //// Buil URL to fetch image from database.  Note:  you must append the random number to the URL or the browser will cache the 
+        //// image and never let it refresh.
+        //string js = "var img = window.parent.document.getElementById('ctl00_ctl00_middle_MiddleContentPlaceHolder_imgEditPhoto3');";
+
+
+        //js += " if (img == null) {";
+        //js += "img = document.getElementById('middle_MiddleContentPlaceHolder_imgEditPhoto3');";
+        //js += "}";
+        //js += "if (img == null) { return; }";
+        //js += " img.src = '";
+        //js += string.Format("Thumbnail.ashx?id={0}&random={1}", _personId, new Random().Next().ToString());
+        //js += "';";
+
+        //js += "var pu = window.parent.document.getElementById('divPhotoUpload'); pu.style.display='none';";
+        //js += "var lnk = window.parent.document.getElementById('ctl00_ctl00_middle_MiddleContentPlaceHolder_lnkAddCustomPhoto');";
+
+        //js += " if (img == null) {";
+        //js += "lnk = document.getElementById('middle_MiddleContentPlaceHolder_lnkAddCustomPhoto');";
+        //js += "}";
+        //js += "if (lnk == null) { return; }";
+        //js += "lnk.style.display='none';";
+
 
         FileUpload1.addCustomJS(FileUploaderAJAX.customJSevent.postUpload, js);
 
@@ -1548,6 +1607,9 @@ public partial class ProfileEdit : BasePageSecure
 
     protected void btnSaveClose_Click(object sender, EventArgs e)
     {
+
+        if (hidRbTrack.Value == "") { return; }
+
         int imgSelected = System.Convert.ToInt32(hidRbTrack.Value);
 
         // Set the user's preference
